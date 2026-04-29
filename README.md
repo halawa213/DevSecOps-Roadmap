@@ -81,33 +81,6 @@ Month 42  →  Certified Kubernetes Security Specialist (CKS)
 Month 48  →  CompTIA Security+
 ```
 
----
-
-## Getting Started
-
-```bash
-git clone https://github.com/YOUR_USERNAME/DevSecOps-Roadmap.git
-cd DevSecOps-Roadmap
-
-# Open the interactive roadmap in your browser
-open DevSecOps.html        # macOS
-xdg-open DevSecOps.html    # Linux
-```
-
-No server needed — it's a self-contained HTML file.
-
----
-
-## Repository Structure
-
-```
-DevSecOps-Roadmap/
-├── DevSecOps.html      # Main interactive roadmap (single-file app)
-└── README.md           # This file
-```
-
----
-
 ## After Phase 08 — What's Next?
 
 Typical next stations once you complete the roadmap:
