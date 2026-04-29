@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CS Student → DevSecOps & Cloud Security Engineer · 48-Month Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ─────────────────────────────────────────────
+   DESIGN TOKENS & THEMES
+───────────────────────────────────────────── */
+:root {
+  /* Dark Theme (Default) */
+  --bg:        #080b12;
+  --surface:   #0b0e18;
+  --card:      #0f1220;
+  --card-alt:  #111625;
+  --border:    #191f30;
+  --border-hi: #232c42;
+  --text:      #b8c8e8;
+  --muted:     #415070;
+  --faint:     #2a3450;
+  --white:     #edf2ff;
+
+  /* Phase accent palette */
+  --p0: #38bdf8; --p1: #34d399; --p2: #a78bfa; --p3: #fb923c;
+  --p4: #f472b6; --p5: #facc15; --p6: #4ade80; --p7: #60a5fa; --p8: #f87171;
+
+  /* Layout */
+  --sidebar-w: 272px;
+  --content-max: 1100px;
+  --glass-bg: rgba(11, 14, 24, 0.7);
+}
+
+[data-theme="light"] {
+  --bg:        #f8fafc;
+  --surface:   #ffffff;
+  --card:      #f1f5f9;
+  --card-alt:  #f8fafc;
+  --border:    #e2e8f0;
+  --border-hi: #cbd5e1;
+  --text:      #334155;
+  --muted:     #64748b;
+  --faint:     #e2e8f0;
+  --white:     #0f172a;
+  --glass-bg: rgba(255, 255, 255, 0.8);
+}
+
+/* ─────────────────────────────────────────────
+   RESET & BASE
+───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Outfit', sans-serif; font-size: 14px; line-height: 1.6;
+  display: flex; min-height: 100vh; transition: background 0.3s, color 0.3s;
+}
+
+/* ─────────────────────────────────────────────
+   INTERACTIVE UI COMPONENTS
+───────────────────────────────────────────── */
+/* Top Progress */
+#top-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--border); z-index: 1000; }
+#top-fill { height: 100%; background: linear-gradient(90deg, var(--p1), var(--p7)); width: 0%; transition: width 0.4s ease; }
+
+/* Control Bar (Search & Filters) */
+.control-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  padding: 16px 52px; border-bottom: 1px solid var(--border);
+  display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+}
+.search-wrapper { position: relative; flex: 1; max-width: 400px; }
+.search-wrapper input {
+  width: 100%; padding: 10px 16px; padding-right: 40px;
+  background: var(--card); border: 1px solid var(--border-hi); border-radius: 8px;
+  color: var(--white); font-family: 'Outfit', sans-serif; font-size: 14px;
+  transition: border-color 0.2s;
+}
+.search-wrapper input:focus { outline: none; border-color: var(--p1); }
+.search-hint { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'JetBrains Mono'; font-size: 10px; color: var(--muted); background: var(--surface); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); pointer-events: none; }
+.filter-group { display: flex; gap: 8px; }
+.filter-btn {
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s;
+}
+.filter-btn:hover { border-color: var(--border-hi); color: var(--white); }
+.filter-btn.active { background: color-mix(in srgb, var(--p7) 15%, transparent); border-color: var(--p7); color: var(--p7); }
+
+/* Dashboard Widget */
+.app-dashboard {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 24px; margin: 32px 52px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px;
+}
+.dash-metric { display: flex; flex-direction: column; gap: 4px; }
+.dash-metric-label { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.dash-metric-val { font-size: 28px; font-weight: 800; color: var(--white); line-height: 1; }
+.dash-focus { grid-column: 1 / -1; background: color-mix(in srgb, var(--p1) 5%, transparent); border: 1px solid color-mix(in srgb, var(--p1) 20%, transparent); padding: 16px; border-radius: 8px; display: flex; gap: 12px; align-items: center; }
+.dash-focus-icon { font-size: 20px; }
+.dash-focus-text { font-size: 14px; color: var(--text); }
+.dash-focus-text strong { color: var(--white); }
+
+/* Checkboxes */
+.item-checkbox {
+  appearance: none; width: 18px; height: 18px; border: 2px solid var(--border-hi); border-radius: 4px;
+  background: var(--surface); cursor: pointer; position: relative; transition: all 0.2s; flex-shrink: 0; margin-top: 2px;
+}
+.item-checkbox:checked { background: var(--p1); border-color: var(--p1); }
+.item-checkbox:checked::after {
+  content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  color: #000; font-size: 12px; font-weight: 900;
+}
+.completed-text { text-decoration: line-through; opacity: 0.5; transition: all 0.3s; }
+
+/* Collapsible Phases */
+.phase-body { overflow: hidden; transition: max-height 0.4s ease, opacity 0.3s ease; opacity: 1; }
+.phase-body.collapsed { max-height: 0 !important; opacity: 0; margin: 0; padding: 0; }
+.phase-toggle {
+  background: transparent; border: 1px solid var(--border-hi); color: var(--text);
+  padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: 'JetBrains Mono'; font-size: 11px;
+  margin-left: auto; transition: background 0.2s;
+}
+.phase-toggle:hover { background: var(--card); color: var(--white); }
+.mark-phase-btn {
+  background: transparent; border: 1px dashed var(--p1); color: var(--p1);
+  padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;
+  width: 100%; margin-top: 20px; transition: all 0.2s;
+}
+.mark-phase-btn:hover { background: color-mix(in srgb, var(--p1) 10%, transparent); }
+
+/* Theme Toggle */
+.theme-toggle {
+  background: transparent; border: none; color: var(--muted); cursor: pointer;
+  font-size: 16px; padding: 8px; border-radius: 6px; transition: color 0.2s;
+}
+.theme-toggle:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+
+/* Utility */
+.hidden-by-filter { display: none !important; }
+
+/* ─────────────────────────────────────────────
+   ORIGINAL STYLES (Retained & Adjusted)
+───────────────────────────────────────────── */
+.sidebar { width: var(--sidebar-w); min-height: 100vh; background: var(--surface); border-right: 1px solid var(--border); position: fixed; top: 0; left: 0; display: flex; flex-direction: column; z-index: 200; overflow-y: auto; transition: background 0.3s, border 0.3s; }
+.sidebar-logo { padding: 28px 20px 22px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; }
+.logo-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.logo-title { font-size: 15px; font-weight: 800; color: var(--white); line-height: 1.35; letter-spacing: -0.02em; }
+.logo-title .accent { color: var(--p1); }
+.logo-subtitle { margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.08em; }
+.sidebar-nav { padding: 16px 0; flex: 1; }
+.nav-section-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint); padding: 6px 20px 10px; }
+.nav-item { display: flex; align-items: center; gap: 11px; padding: 9px 20px; cursor: pointer; transition: background 0.15s, border-left-color 0.15s; border-left: 2px solid transparent; text-decoration: none; }
+.nav-item:hover { background: rgba(128, 128, 128, 0.05); }
+.nav-item.active { border-left-color: var(--pc, var(--p1)); background: rgba(128, 128, 128, 0.08); }
+.nav-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; color: var(--pc, var(--muted)); min-width: 20px; flex-shrink: 0; }
+.nav-label { font-size: 12px; font-weight: 500; color: var(--text); flex: 1; line-height: 1.3; }
+.nav-item.active .nav-label { color: var(--white); }
+.nav-months { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); white-space: nowrap; }
+.sidebar-footer { padding: 16px 20px 20px; border-top: 1px solid var(--border); }
+.progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.progress-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+#pp { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600; color: var(--p1); }
+.progress-track { height: 3px; background: var(--border-hi); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--p1), var(--p7)); border-radius: 2px; width: 0%; transition: width 0.4s ease; }
+.sidebar-meta { margin-top: 10px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); line-height: 1.7; }
+.sidebar-meta strong { color: var(--p1); font-weight: 600; }
+
+.main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
+.hero { background: var(--bg); padding: 60px 52px 48px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; transition: background 0.3s; }
+.hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(var(--border-hi) 1px, transparent 1px); background-size: 32px 32px; opacity: 0.4; pointer-events: none; }
+.hero-inner { position: relative; z-index: 1; max-width: 760px; }
+.hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--p1); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+.hero h1 { font-size: clamp(38px, 5.5vw, 68px); font-weight: 900; line-height: 0.93; letter-spacing: -0.035em; color: var(--white); margin-bottom: 22px; }
+.hero h1 .accent { background: linear-gradient(130deg, var(--p0), var(--p1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-description { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.85; max-width: 600px; margin-bottom: 28px; }
+.hero-description strong { color: var(--text); font-weight: 500; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 500; border: 1px solid; }
+.chip-sky  { border-color: rgba(56,189,248,.3); color: var(--p0); background: rgba(56,189,248,.08); }
+.chip-em   { border-color: rgba(52,211,153,.3); color: var(--p1); background: rgba(52,211,153,.08); }
+.chip-vi   { border-color: rgba(167,139,250,.3); color: var(--p2); background: rgba(167,139,250,.08); }
+.chip-or   { border-color: rgba(251,146,60,.3); color: var(--p3); background: rgba(251,146,60,.08); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); border-bottom: 1px solid var(--border); background: var(--surface); transition: background 0.3s; }
+.stat { padding: 18px 24px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 5px; }
+.stat:last-child { border-right: none; }
+.stat-number { font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+.stat-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.14em; text-transform: uppercase; }
+
+.content { padding: 0 0 100px; max-width: var(--content-max); }
+.phase-section { padding: 56px 52px; border-bottom: 1px solid var(--border); scroll-margin-top: 70px; }
+.phase-section[data-p="0"] { --pc: var(--p0); } .phase-section[data-p="1"] { --pc: var(--p1); } .phase-section[data-p="2"] { --pc: var(--p2); }
+.phase-section[data-p="3"] { --pc: var(--p3); } .phase-section[data-p="4"] { --pc: var(--p4); } .phase-section[data-p="5"] { --pc: var(--p5); }
+.phase-section[data-p="6"] { --pc: var(--p6); } .phase-section[data-p="7"] { --pc: var(--p7); } .phase-section[data-p="8"] { --pc: var(--p8); }
+
+.phase-header { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 28px; flex-wrap: wrap; }
+.phase-badge { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 72px; height: 72px; border-radius: 14px; border: 1.5px solid var(--pc); color: var(--pc); flex-shrink: 0; background: color-mix(in srgb, var(--pc) 6%, transparent); }
+.badge-label { font-family: 'JetBrains Mono', monospace; font-size: 8px; opacity: 0.65; letter-spacing: 0.1em; }
+.badge-icon { font-size: 22px; line-height: 1.1; }
+.badge-number { font-size: 16px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+.phase-title-block { flex: 1; min-width: 0; }
+.phase-kicker { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--pc); margin-bottom: 6px; }
+.phase-h2 { font-size: clamp(22px, 3vw, 34px); font-weight: 800; line-height: 1.08; color: var(--white); letter-spacing: -0.025em; margin-bottom: 6px; }
+.phase-subtitle { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.6; max-width: 520px; }
+.phase-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-left: auto; align-items: flex-start; padding-top: 4px; }
+.mpill { padding: 4px 12px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 9px; border: 1px solid color-mix(in srgb, var(--pc) 35%, transparent); color: var(--pc); background: color-mix(in srgb, var(--pc) 7%, transparent); white-space: nowrap; }
+
+.ai-meter { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 10px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
+.ai-meter-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); white-space: nowrap; letter-spacing: 0.1em; text-transform: uppercase; }
+.ai-bar { flex: 1; height: 3px; background: var(--border-hi); border-radius: 2px; overflow: hidden; }
+.ai-fill { height: 100%; border-radius: 2px; background: var(--pc); }
+
+.de-meter { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 10px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
+.de-meter-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); white-space: nowrap; letter-spacing: 0.1em; text-transform: uppercase; }
+.de-bar { width: 80px; height: 3px; background: var(--border-hi); border-radius: 2px; overflow: hidden; flex-shrink: 0; }
+.de-fill { height: 100%; border-radius: 2px; background: #f5c518; }
+.de-level { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: #f5c518; white-space: nowrap; }
+.de-tip { font-size: 11px; color: var(--muted); flex: 1; }
+.ai-value { font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--pc); white-space: nowrap; }
+
+.uni-sync { background: linear-gradient(135deg, color-mix(in srgb, var(--p0) 5%, transparent), color-mix(in srgb, var(--p1) 3%, transparent)); border: 1px solid color-mix(in srgb, var(--p0) 20%, transparent); border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; font-size: 12.5px; line-height: 1.75; }
+.uni-sync-title { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--p0); margin-bottom: 6px; font-weight: 600; }
+.goal-box { display: flex; gap: 14px; background: var(--card); border: 1px solid var(--border-hi); border-radius: 10px; padding: 16px 20px; margin-bottom: 28px; }
+.goal-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
+.goal-text { font-size: 13px; font-weight: 300; color: var(--text); line-height: 1.8; }
+.goal-text strong { font-weight: 600; color: var(--white); }
+
+.section-divider { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 10px; margin: 22px 0 16px; }
+.section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* Trackable items structure update */
+.skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; margin-bottom: 22px; }
+.skill-card {
+  background: var(--card-alt); border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px 16px; transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 0;
+  cursor: pointer;
+}
+.skill-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--pc); opacity: 0.7; }
+.skill-card:hover { border-color: var(--border-hi); box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.skill-content { flex: 1; }
+.skill-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.skill-icon { font-size: 14px; flex-shrink: 0; }
+.skill-name { font-size: 13px; font-weight: 600; color: var(--white); flex: 1; line-height: 1.3; }
+.skill-badge { font-family: 'JetBrains Mono', monospace; font-size: 8px; padding: 2px 7px; border-radius: 4px; background: rgba(128,128,128,0.1); color: var(--muted); border: 1px solid var(--border-hi); white-space: nowrap; flex-shrink: 0; }
+.skill-description { font-size: 12px; color: var(--muted); line-height: 1.65; font-weight: 300; margin-bottom: 10px; }
+.skill-resources { display: flex; flex-wrap: wrap; gap: 5px; }
+.resource-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border-hi); color: var(--muted); white-space: nowrap; }
+
+.project-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; border-radius: 8px; background: var(--card); border: 1px solid var(--border); margin-bottom: 7px; font-size: 12.5px; color: var(--text); line-height: 1.55; transition: border-color 0.15s; }
+.project-item:hover { border-color: var(--border-hi); }
+.project-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--pc, var(--muted)); flex-shrink: 0; margin-top: 2px; min-width: 22px; font-weight: 600; }
+.project-content { flex: 1; }
+
+.cert-box { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; padding: 16px; background: var(--card); border-radius: 10px; border: 1px dashed var(--border-hi); }
+.cert-item { flex: 1; min-width: 180px; display: flex; gap: 12px; align-items: flex-start; }
+
+.checkpoint-box { margin-top: 24px; padding: 16px 20px; border-radius: 10px; background: color-mix(in srgb, var(--pc) 5%, var(--card)); border: 1px solid color-mix(in srgb, var(--pc) 25%, transparent); }
+.checkpoint-title { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--pc); margin-bottom: 10px; font-weight: 600; }
+.checkpoint-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.checkpoint-list li { display: flex; align-items: flex-start; gap: 9px; font-size: 12px; color: var(--text); line-height: 1.55; font-weight: 300; }
+
+.egypt-box { margin-bottom: 16px; padding: 14px 18px; border-radius: 10px; background: linear-gradient(135deg, rgba(128,128,128,.05), rgba(128,128,128,.02)); border: 1px solid rgba(250,204,21,.3); font-size: 12.5px; line-height: 1.75; }
+.egypt-box-title { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #fbbf24; margin-bottom: 6px; font-weight: 600; }
+.egypt-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.egypt-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 2px 9px; border-radius: 4px; border: 1px solid rgba(250,204,21,.3); color: #fbbf24; background: rgba(250,204,21,.1); white-space: nowrap; }
+
+/* Checkpoint tier groups */
+.checkpoint-group-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 8.5px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--pc); margin: 14px 0 8px; font-weight: 700;
+  display: flex; align-items: center; gap: 10px;
+}
+.checkpoint-group-label::after { content: ''; flex: 1; height: 1px; background: color-mix(in srgb, var(--pc) 25%, transparent); }
+.checkpoint-group-label.mastery-label { color: var(--muted); }
+.checkpoint-group-label.mastery-label::after { background: var(--border); }
+.checkpoint-core-mark { font-size: 8px; color: var(--pc); margin-right: 1px; }
+.checkpoint-mastery-mark { font-size: 8px; color: var(--muted); margin-right: 1px; }
+
+/* Recovery box */
+.recovery-box {
+  margin-bottom: 16px; padding: 14px 18px; border-radius: 10px;
+  background: linear-gradient(135deg, rgba(248,113,113,.04), rgba(96,165,250,.03));
+  border: 1px solid rgba(248,113,113,.25); font-size: 12.5px; line-height: 1.75;
+}
+.recovery-box-title { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #f87171; margin-bottom: 6px; font-weight: 600; }
+.recovery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-top: 10px; }
+.recovery-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+.recovery-card-label { font-family: 'JetBrains Mono', monospace; font-size: 8.5px; color: #f87171; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; font-weight: 600; }
+.recovery-card-text { font-size: 11.5px; color: var(--muted); line-height: 1.6; }
+
+/* ─────────────────────────────────────────────
+   TIPS SECTION
+───────────────────────────────────────────── */
+.tips-section {
+  padding: 56px 52px 80px;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 70px;
+  --ptips: #c084fc;
+}
+.tips-section-header {
+  display: flex; align-items: flex-start; gap: 20px; margin-bottom: 36px; flex-wrap: wrap;
+}
+.tips-badge {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 72px; height: 72px; border-radius: 14px;
+  border: 1.5px solid var(--ptips); color: var(--ptips); flex-shrink: 0;
+  background: color-mix(in srgb, var(--ptips) 6%, transparent);
+}
+.tips-title-block { flex: 1; min-width: 0; }
+.tips-kicker {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ptips); margin-bottom: 6px;
+}
+.tips-h2 {
+  font-size: clamp(22px, 3vw, 34px); font-weight: 800; line-height: 1.08;
+  color: var(--white); letter-spacing: -0.025em; margin-bottom: 6px;
+}
+.tips-subtitle { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.6; max-width: 520px; }
+
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.tip-card {
+  background: var(--card-alt); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.15s;
+}
+.tip-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--ptips); opacity: 0.7; }
+.tip-card:hover { border-color: var(--border-hi); transform: translateY(-2px); }
+.tip-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.tip-card-icon { font-size: 18px; flex-shrink: 0; }
+.tip-card-title { font-size: 13px; font-weight: 700; color: var(--white); flex: 1; line-height: 1.3; }
+.tip-card-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 8.5px; padding: 2px 7px; border-radius: 4px;
+  background: color-mix(in srgb, var(--ptips) 12%, transparent);
+  color: var(--ptips); border: 1px solid color-mix(in srgb, var(--ptips) 30%, transparent); white-space: nowrap;
+}
+.tip-card-body { font-size: 12px; color: var(--muted); line-height: 1.75; font-weight: 300; }
+.tip-card-body strong { color: var(--text); font-weight: 500; }
+
+.tips-stations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-bottom: 28px; }
+.station-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start;
+  transition: border-color 0.2s;
+}
+.station-card:hover { border-color: color-mix(in srgb, var(--ptips) 40%, transparent); }
+.station-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 800;
+  color: var(--ptips); flex-shrink: 0; line-height: 1; opacity: 0.6;
+}
+.station-body { flex: 1; }
+.station-title { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 5px; line-height: 1.3; }
+.station-desc { font-size: 11.5px; color: var(--muted); line-height: 1.65; font-weight: 300; }
+
+.soft-skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.soft-skill-item {
+  display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  transition: border-color 0.2s;
+}
+.soft-skill-item:hover { border-color: var(--border-hi); }
+.soft-skill-emoji { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.soft-skill-content { flex: 1; }
+.soft-skill-name { font-size: 12.5px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+.soft-skill-desc { font-size: 11.5px; color: var(--muted); line-height: 1.65; font-weight: 300; }
+
+.tips-closing {
+  margin-top: 32px; padding: 20px 24px; border-radius: 12px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--ptips) 7%, transparent), color-mix(in srgb, var(--p7) 4%, transparent));
+  border: 1px solid color-mix(in srgb, var(--ptips) 25%, transparent);
+  text-align: center;
+}
+.tips-closing-text { font-size: 15px; font-weight: 300; color: var(--text); line-height: 1.9; }
+.tips-closing-text strong { color: var(--white); font-weight: 700; }
+.tips-closing-text em { color: var(--ptips); font-style: normal; font-weight: 500; }
+
+/* Responsive */
+@media (max-width: 860px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .hero, .control-bar, .app-dashboard, .phase-section, .tips-section { padding-left: 24px; padding-right: 24px; }
+  .phase-header { flex-direction: column; gap: 12px; }
+  .phase-pills, .phase-toggle { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<div id="top-bar"><div id="top-fill"></div></div>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div>
+      <div class="logo-eyebrow">// Your Roadmap</div>
+      <div class="logo-title">CS Student →<br/><span class="accent">DevSecOps &amp;</span><br/>Cloud Security</div>
+      <div class="logo-subtitle">48 Months · 9 Phases · 5 Certs</div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">🌙</button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">48-Month Path</div>
+    <a class="nav-item" href="#p0" data-target="0" style="--pc:var(--p0)">
+      <span class="nav-num">00</span><span class="nav-label">Security Foundations</span><span class="nav-months">M 1–4</span>
+    </a>
+    <a class="nav-item" href="#p1" data-target="1" style="--pc:var(--p1)">
+      <span class="nav-num">01</span><span class="nav-label">Linux & OS Mastery</span><span class="nav-months">M 5–8</span>
+    </a>
+    <a class="nav-item" href="#p2" data-target="2" style="--pc:var(--p2)">
+      <span class="nav-num">02</span><span class="nav-label">Network Security</span><span class="nav-months">M 9–12</span>
+    </a>
+    <a class="nav-item" href="#p3" data-target="3" style="--pc:var(--p3)">
+      <span class="nav-num">03</span><span class="nav-label">Cloud Core & SecOps</span><span class="nav-months">M 13–18</span>
+    </a>
+    <a class="nav-item" href="#p4" data-target="4" style="--pc:var(--p4)">
+      <span class="nav-num">04</span><span class="nav-label">Container & K8s Sec.</span><span class="nav-months">M 19–24</span>
+    </a>
+    <a class="nav-item" href="#p5" data-target="5" style="--pc:var(--p5)">
+      <span class="nav-num">05</span><span class="nav-label">DevSecOps Pipelines</span><span class="nav-months">M 25–30</span>
+    </a>
+    <a class="nav-item" href="#p6" data-target="6" style="--pc:var(--p6)">
+      <span class="nav-num">06</span><span class="nav-label">Threat Detection & SIEM</span><span class="nav-months">M 31–36</span>
+    </a>
+    <a class="nav-item" href="#p7" data-target="7" style="--pc:var(--p7)">
+      <span class="nav-num">07</span><span class="nav-label">Zero Trust Platform</span><span class="nav-months">M 37–42</span>
+    </a>
+    <a class="nav-item" href="#p8" data-target="8" style="--pc:var(--p8)">
+      <span class="nav-num">08</span><span class="nav-label">Red Team & Compliance</span><span class="nav-months">M 43–48</span>
+    </a>
+    <div class="nav-section-label" style="margin-top:8px;">Beyond the Roadmap</div>
+    <a class="nav-item" href="#tips" style="--pc:#c084fc">
+      <span class="nav-num">✦</span><span class="nav-label">Job Tips & What's Next</span><span class="nav-months">After</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="progress-header">
+      <span class="progress-label">Overall Completion</span>
+      <span id="pp">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="pb"></div>
+    </div>
+    <div class="sidebar-meta">
+      Tasks Completed: <strong id="tasksCount">0 / 0</strong>
+    </div>
+    <div class="sidebar-meta" style="margin-top:8px; padding-top:8px; border-top:1px solid var(--border);">
+      🇩🇪 German: <strong style="color:var(--p2)">A2 → B1 → B1+</strong><br/>
+      🔐 Security: <strong style="color:var(--p0)">Always On</strong>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">CS Student · Interactive Edition · Security-First</div>
+    <h1>Zero to<br/><span class="accent">DevSecOps &amp; Cloud</span><br/>Security Engineer</h1>
+    <p class="hero-description">
+      A structured, 48-month path from CS student to <strong>DevSecOps & Cloud Security Engineer</strong>. This path is deliberately built to be <strong>highly AI-resistant</strong> — deep threat modeling, hands-on penetration testing, compliance engineering, and security architecture judgment cannot be automated. Track your progress, filter skills, and build a career that stays relevant through the AI era.
+    </p>
+    <div class="chips">
+      <span class="chip chip-sky">🔐 DevSecOps & Cloud Security</span>
+      <span class="chip chip-em">🎓 CS Student Pace</span>
+      <span class="chip chip-vi">🛡️ AI-Resistant Career</span>
+      <span class="chip chip-or">⏳ 48 Months</span>
+    </div>
+  </div>
+</div>
+
+  <div class="stats">
+  <div class="stat"><span class="stat-number" style="color:var(--p0)">9</span><span class="stat-label">Phases</span></div>
+  <div class="stat"><span class="stat-number" style="color:var(--p1)">48</span><span class="stat-label">Months</span></div>
+  <div class="stat"><span class="stat-number" style="color:var(--p2)">5</span><span class="stat-label">Certifications</span></div>
+  <div class="stat"><span class="stat-number" style="color:var(--p3)">10–15h</span><span class="stat-label">Per Week</span></div>
+</div>
+
+<div class="app-dashboard">
+  <div class="dash-metric">
+    <span class="dash-metric-label">Current Phase</span>
+    <span class="dash-metric-val" id="dashPhase" style="color:var(--p1)">00</span>
+  </div>
+  <div class="dash-metric">
+    <span class="dash-metric-label">Completion Status</span>
+    <span class="dash-metric-val" id="dashPercent">0%</span>
+  </div>
+  <div class="dash-metric">
+    <span class="dash-metric-label">Est. Completion</span>
+    <span class="dash-metric-val" id="dashETA" style="font-size:18px;color:var(--muted)">—</span>
+  </div>
+  <div class="dash-focus">
+    <span class="dash-focus-icon">🎯</span>
+    <span class="dash-focus-text"><strong>Next Focus:</strong> <span id="dashNextTask">Security Mindset & Terminal Basics</span></span>
+  </div>
+</div>
+
+<div class="control-bar">
+  <div class="search-wrapper">
+    <input type="text" id="searchInput" placeholder="Search skills, tools, or projects...">
+    <span class="search-hint">Press /</span>
+  </div>
+  <div class="filter-group">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="skill">Skills</button>
+    <button class="filter-btn" data-filter="project">Projects</button>
+  </div>
+</div>
+
+<div class="content" id="roadmapContent">
+  </div>
+
+<!-- ═══════════════════════════════════════════════
+     TIPS SECTION — Job Market · What's Next · Soft Skills
+══════════════════════════════════════════════════ -->
+<section class="tips-section" id="tips">
+
+  <div class="tips-section-header">
+    <div class="tips-badge">
+      <span class="badge-label">BEYOND</span>
+      <span class="badge-icon">✦</span>
+      <span class="badge-number" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;">48M+</span>
+    </div>
+    <div class="tips-title-block">
+      <div class="tips-kicker">// After Phase 08 · The Bigger Picture</div>
+      <div class="tips-h2">DevSecOps Job Market,<br/>What's Next &amp; Soft Skills</div>
+      <div class="tips-subtitle">The technical roadmap ends. The security career doesn't. Here's how to land your first DevSecOps or Cloud Security role, what comes after — and the human skills that separate great security engineers from technically strong but professionally stagnant ones.</div>
+    </div>
+  </div>
+
+  <!-- ── 1. JOB MARKET TIPS ── -->
+  <div class="section-divider">💼 Job Market Tips</div>
+  <div class="tips-grid">
+
+    <div class="tip-card">
+      <div class="tip-card-header">
+        <span class="tip-card-icon">🕐</span>
+        <span class="tip-card-title">When to Start Applying</span>
+        <span class="tip-card-tag">Timing</span>
+      </div>
+      <div class="tip-card-body">
+        Don't wait until Month 48 — but be honest about what's realistic for <em>this</em> path specifically. <strong>Month 20–22:</strong> Apply for SOC Analyst L1, Security Analyst intern, and AppSec intern roles — your Security+ and Linux hardening labs are enough. <strong>Month 28–30:</strong> Apply for Cloud Security Engineer, junior DevSecOps, and Security Engineer roles — AWS SAA + CKA + your SIEM pipeline project is a strong package. <strong>"DevSecOps Engineer" as a title</strong> typically requires the AWS Security Specialty in addition to CKA; target that title from Month 32+. Your first role doesn't need to carry the exact title — it needs to be real security work that compounds. Egyptian hiring managers care about demonstrated skills and a visible GitHub portfolio more than years of experience.
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-card-header">
+        <span class="tip-card-icon">📄</span>
+        <span class="tip-card-title">Your CV Strategy</span>
+        <span class="tip-card-tag">Positioning</span>
+      </div>
+      <div class="tip-card-body">
+        <strong>Lead with certifications</strong> (AWS SAA, CKA, AWS Security Specialty, CKS) — not your GPA. Then add GitHub portfolio links with real security projects (your SIEM pipeline, your DevSecOps pipeline, your compliance reports). Keep it to one page. Egyptian security recruiters scan CVs in 10 seconds; certs and GitHub links stand out immediately. Never submit a CV without a real project link.
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-card-header">
+        <span class="tip-card-icon">🔍</span>
+        <span class="tip-card-title">Where to Search in Egypt</span>
+        <span class="tip-card-tag">Platforms</span>
+      </div>
+      <div class="tip-card-body">
+        Search these exact titles on <strong>LinkedIn Egypt</strong> and <strong>Wuzzuf.net</strong>: "DevSecOps Engineer", "Cloud Security Engineer", "Security Engineer", "AppSec Engineer", "SOC Engineer L2/L3". <strong>Forasna</strong> and <strong>Jobzella</strong> also list mid-market roles. Target companies: Vodafone Egypt, IBM Egypt, Huawei Egypt for security/cloud roles; Instabug, Paymob, Breadfast for DevSecOps; CIB, EFG Hermes, HSBC Egypt for financial sector security (well-paid, compliance-heavy).
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-card-header">
+        <span class="tip-card-icon">💬</span>
+        <span class="tip-card-title">Cold Outreach — It Works</span>
+        <span class="tip-card-tag">High ROI</span>
+      </div>
+      <div class="tip-card-body">
+        Don't wait for job postings. Find Security Engineering managers, SOC leads, and senior DevSecOps engineers at target companies on LinkedIn. Send a short, direct message: who you are, one security project you built (your SIEM pipeline, your compliance report), what you're looking for. <strong>A cold message with a GitHub link to your threat model or security lab converts better than most applications.</strong> 5 thoughtful messages beat 50 automated applications.
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-card-header">
+        <span class="tip-card-icon">🌍</span>
+        <span class="tip-card-title">Remote Work Strategy</span>
+        <span class="tip-card-tag">3–5× Salary</span>
+      </div>
+      <div class="tip-card-body">
+        EU/US remote roles pay <strong>3–5× local rates</strong> for the same skills. Platforms: <strong>LinkedIn (global)</strong>, <strong>Upwork</strong> (contracts), <strong>Toptal</strong> (high-end), <strong>Remote.co</strong>, <strong>We Work Remotely</strong>. Your English communication skills are a major multiplier here. Build your public GitHub and dev.to presence before applying remotely — portfolio is everything.
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-card-header">
+        <span class="tip-card-icon">💰</span>
+        <span class="tip-card-title">Salary Context (Egypt 2025–2026)</span>
+        <span class="tip-card-tag">Know Your Worth</span>
+      </div>
+      <div class="tip-card-body">
+        Junior DevSecOps/Security Engineer: <strong>EGP 20,000–40,000/month</strong>. Mid-level with 2+ years + CKA + AWS Security Specialty: <strong>EGP 40,000–80,000/month</strong>. Senior Cloud Security/DevSecOps: <strong>EGP 80,000–150,000/month</strong>. Remote for EU/US companies: <strong>$2,500–$7,000/month USD</strong> (security engineers command a 20–30% premium over general DevOps). Never disclose your current salary in negotiations — share your market expectations instead.
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-card-header">
+        <span class="tip-card-icon">🌐</span>
+        <span class="tip-card-title">Open Source as a Portfolio Shortcut</span>
+        <span class="tip-card-tag">Visibility</span>
+      </div>
+      <div class="tip-card-body">
+        A merged PR to Falco, Trivy, Semgrep, or the Sigma detection library is worth 10 personal projects in terms of credibility to a security hiring manager. Start small — add a detection rule, fix a false positive, improve docs. Security tool maintainers are very accessible. <strong>One merged security tool PR signals a level of craft and community engagement most junior candidates don't have.</strong>
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-card-header">
+        <span class="tip-card-icon">🎤</span>
+        <span class="tip-card-title">Build a Public Presence Early</span>
+        <span class="tip-card-tag">Long Game</span>
+      </div>
+      <div class="tip-card-body">
+        Start writing on <strong>dev.to</strong> or a personal blog at Month 8 — not Month 48. One post per month about what you learned this phase. After 4 years you'll have 40+ posts, consistent GitHub activity, and an online presence that attracts recruiters. <strong>Inbound beats outbound — people who write get found.</strong>
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-card-header">
+        <span class="tip-card-icon">🔄</span>
+        <span class="tip-card-title">Recovery Protocol — When Life Interrupts</span>
+        <span class="tip-card-tag">For Everyone</span>
+      </div>
+      <div class="tip-card-body">
+        48 months is a long time. You <em>will</em> take an unplanned break at some point — exams, illness, motivation collapse, family. Here's the protocol by gap length:
+        <div class="recovery-grid" style="margin-top:10px;">
+          <div class="recovery-card">
+            <div class="recovery-card-label">1–2 weeks</div>
+            <div class="recovery-card-text">Resume exactly where you stopped. Don't restart the phase. A small review session is enough.</div>
+          </div>
+          <div class="recovery-card">
+            <div class="recovery-card-label">2–6 weeks</div>
+            <div class="recovery-card-text">Spend one session re-doing the last project from memory. If you can, you're ready to continue. If not, revisit the specific skill card that's fuzzy.</div>
+          </div>
+          <div class="recovery-card">
+            <div class="recovery-card-label">6 weeks – 3 months</div>
+            <div class="recovery-card-text">Treat the last 2 checkpoints as an exam. Pass them → move on. Fail them → spend one week on that skill only, then re-test.</div>
+          </div>
+          <div class="recovery-card">
+            <div class="recovery-card-label">3+ months</div>
+            <div class="recovery-card-text">Back up one phase. Spend 2 weeks going through its checkpoints to rebuild your foundation. Then resume the current phase. You haven't failed — this is normal engineering career pace.</div>
+          </div>
+        </div>
+        <strong style="display:block; margin-top:10px; color:var(--white);">The worst response to a gap is restarting from Phase 0. Don't.</strong>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── 2. WHAT'S NEXT — NEXT STATIONS ── -->
+  <div class="section-divider">🚀 Your Next Stations After Phase 08</div>
+  <div class="tips-stations-grid">
+
+    <div class="station-card">
+      <div class="station-num">A</div>
+      <div class="station-body">
+        <div class="station-title">Staff / Principal DevSecOps Engineer</div>
+        <div class="station-desc">The individual contributor security leadership track. You design the security systems that entire engineering orgs depend on — detection platforms, secrets management, Policy-as-Code, Zero Trust architecture. You write security RFCs, set organizational security strategy, and are the person other engineers come to when something breaks at 2 AM.</div>
+      </div>
+    </div>
+
+    <div class="station-card">
+      <div class="station-num">B</div>
+      <div class="station-body">
+        <div class="station-title">Cloud Security Architect</div>
+        <div class="station-desc">Specialize in AWS or multi-cloud security architecture at the design level. Pursue AWS Security Specialty + CISSP or CCSP. At this tier you're advising on how to protect systems worth millions — writing threat models, reviewing architectures before a single line of Terraform is written, and briefing executives on risk posture.</div>
+      </div>
+    </div>
+
+    <div class="station-card">
+      <div class="station-num">C</div>
+      <div class="station-body">
+        <div class="station-title">Security Engineering Manager / CISO Track</div>
+        <div class="station-desc">The people leadership track. Transition from building security systems to building security teams. Your deep technical background makes you a rare security manager who can evaluate engineers, run meaningful incident response exercises, defend security investment decisions to the board, and earn the trust of both technical and non-technical stakeholders.</div>
+      </div>
+    </div>
+
+    <div class="station-card">
+      <div class="station-num">D</div>
+      <div class="station-body">
+        <div class="station-title">Security Consultant / Founder</div>
+        <div class="station-desc">With a DevSecOps skill set, compliance knowledge, and a professional network, starting a security consultancy serving Egyptian SMEs and financial institutions is highly viable. Companies pay premium rates for engineers who can conduct cloud security assessments, help them pass SOC 2 or ISO 27001 audits, and build their DevSecOps pipelines from scratch. Many Egyptian security firms started exactly this way.</div>
+      </div>
+    </div>
+
+    <div class="station-card">
+      <div class="station-num">E</div>
+      <div class="station-body">
+        <div class="station-title">Relocation / Global Security Opportunities</div>
+        <div class="station-desc">AWS SAA + CKA + AWS Security Specialty + CKS + 2 years of real security experience opens doors to Germany (Blue Card), UAE (GITEX cybersecurity ecosystem), Netherlands, and Canada. Cloud Security is one of the most globally undersupplied engineering specializations. Egyptian engineers with EU languages (your German!) have a significant competitive advantage for DACH-region security roles.</div>
+      </div>
+    </div>
+
+    <div class="station-card">
+      <div class="station-num">F</div>
+      <div class="station-body">
+        <div class="station-title">MSc / Security Research Track</div>
+        <div class="station-desc">If you're drawn to the academic and research side — cloud-native security, formal verification of security protocols, AI security, or cryptographic systems — an MSc (in Egypt or abroad) gives you access to security research labs, funded positions, and paths into Big Tech security teams (Google Project Zero, AWS Security, Microsoft MSRC) where a research background is actively valued.</div>
+      </div>
+    </div>
+
+    <div class="station-card">
+      <div class="station-num">G</div>
+      <div class="station-body">
+        <div class="station-title">Remote Security Contractor / Freelance</div>
+        <div class="station-desc">With AWS SAA + CKA + AWS Security Specialty + a strong GitHub security portfolio, contracting remotely for EU/US companies is immediately viable from Egypt. Security contractors command rates of $50–120/hr on Toptal or direct — higher than general DevOps. This path offers the highest short-term income ceiling but requires strong self-marketing, client management, and financial discipline. Many engineers use this as a 1–2 year bridge between their first local job and a full-time remote security role.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-divider">🌍 Community & Open Source — The Invisible Multiplier</div>
+  <div class="soft-skills-grid">
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🔓</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Contribute to Open Source — Start Smaller Than You Think</div>
+        <div class="soft-skill-desc">You don't need to find a zero-day in Month 1. Start with documentation fixes, detection rule additions, or false-positive fixes in Sigma or Falco rules — these are genuinely valued contributions. The goal in Year 1 is your first merged PR — anywhere. By Year 2, target tools you actually use: Trivy, Semgrep, Prowler, Falco. A GitHub profile showing consistent security tool contributions across 4 years tells a hiring manager more than a CV ever will. One merged PR per month is a pace any student can sustain.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🇪🇬</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Egyptian Tech Communities — Show Up in Person</div>
+        <div class="soft-skill-desc">The Egyptian tech and security scene is more active than most students realize. Communities worth joining now: <strong>OWASP Egypt Chapter</strong> — events in Cairo and Alexandria, free, directly relevant to AppSec and DevSecOps. <strong>AWS User Group Egypt</strong> — cloud meetups with security content. <strong>Cybersecurity Egypt community (Facebook/LinkedIn)</strong> — active professionals sharing security news and opportunities. <strong>Null Egypt (CTF & Security Research)</strong> — Capture The Flag competitions are the best way to sharpen offensive skills and meet serious security engineers. <strong>BSides Cairo</strong> — when it runs, the highest-signal security event in Egypt. Attend one event per quarter minimum. The security engineer you meet at an OWASP meetup in Month 6 might be your internship referral in Month 18.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">✍️</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Write in Public — Your Compounding Asset</div>
+        <div class="soft-skill-desc">Start a technical security blog on dev.to or Hashnode (both free, no setup). Write about what you're actually learning: "How I built my first SIEM pipeline and what broke," "3 STRIDE threats I found in my own cloud architecture," "Why my DevSecOps pipeline fails the build before a human even reviews the code." Security posts attract a niche but highly engaged audience — hiring managers, red teamers, and other practitioners. One post per month is 48 posts by graduation. Each post is a permanent credential that Google indexes and recruiters find.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🤝</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Help Others Learn — It Accelerates Your Own Learning</div>
+        <div class="soft-skill-desc">Answer questions on Reddit (r/devops, r/aws, r/kubernetes), Stack Overflow, or Discord servers (CNCF Slack, KodeKloud community). Teaching forces you to solidify understanding — you can't explain what you don't truly know. A history of helpful answers is also a public portfolio of competence. Start this in Phase 1 with Linux questions — you'll know enough to help beginners even while you're still learning intermediate topics yourself. By Phase 4, you'll be the person answering CKA prep questions, which is one of the best ways to review for the exam.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🔗</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">LinkedIn — Build It Early, Use It Strategically</div>
+        <div class="soft-skill-desc">Set up a complete LinkedIn profile by Month 3 — not Month 23. The earlier you start building connections, the larger your network is when you need it for internships and jobs. Post one learning update per week: "Just set up my first VPC from scratch — here's what confused me and how I figured it out." Tag skills after each phase. Connect with every engineer you meet at events. Reach out to Egyptians working in cloud roles in Germany, Netherlands, or UAE — a short, specific message ("I noticed you moved from Egypt to Berlin as a DevOps engineer — would you be willing to share one thing you wish you'd done differently?") has a surprisingly high reply rate. Build the network before you need it.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-divider">🧠 Soft Skills to Build Throughout</div>
+  <div class="soft-skills-grid">
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">✍️</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Technical Writing & Documentation</div>
+        <div class="soft-skill-desc">The ability to write a clear README, a concise ADR, or a blameless postmortem is rarer than most engineers admit. Engineers who write clearly get promoted. Start writing every project README as if a stranger will read it.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🗣️</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Presenting Technical Work</div>
+        <div class="soft-skill-desc">Being able to demo what you built to a room — clearly, confidently, without notes — is a career multiplier. Practice with your university study groups first. Give a short internal talk at your first job within the first 6 months. The discomfort disappears fast.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🤝</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Asking Good Questions</div>
+        <div class="soft-skill-desc">Before asking for help: spend 30 minutes trying yourself, document what you tried, articulate exactly where you're stuck. Engineers who ask structured questions learn faster and are far easier to work with. This is a professional skill, not just a social one.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🏗️</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Ownership Mindset</div>
+        <div class="soft-skill-desc">When something is broken, the ownership mindset says "I'll figure out whose problem this is and make sure it's fixed" — not "that's not my ticket." Engineers with this mindset get noticed in every team they join, usually within the first 90 days.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🔁</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Blameless Postmortem Culture</div>
+        <div class="soft-skill-desc">When things break — and they will — the most valuable response is "here's what happened, here's why, here's how we prevent it." Not blame, not shame. Adopt this mindset from day one. Engineers who practice it become the people teams trust during incidents.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">💪</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Resilience & Learning from Failure</div>
+        <div class="soft-skill-desc">This roadmap is 48 months. You will get stuck, lose motivation, fail an exam, miss a deadline. The engineers who finish long journeys aren't the ones who never struggled — they're the ones who resumed after struggling. Treat every stuck point as diagnostic data, not judgment.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🌐</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Community & Networking</div>
+        <div class="soft-skill-desc">Join the Cloud Native Cairo meetup, CNCF Slack, and r/devops. Comment on GitHub issues. Reply to blog posts. Attend one conference (virtual or in-person) per year. Most job opportunities at the mid-senior level come through people you know, not job boards.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">⏱️</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Time Management (University + Roadmap)</div>
+        <div class="soft-skill-desc">The biggest risk to this roadmap isn't complexity — it's context switching between university exams and self-study. Dedicate 2–3 fixed weekly slots to roadmap work. Treat them as university lectures you cannot cancel. Consistency matters far more than the occasional 8-hour weekend sprint.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🤖</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">AI Collaboration (not AI dependency)</div>
+        <div class="soft-skill-desc">AI coding tools are now part of the job. Use them to move faster — but understand every line they generate. The engineers who will thrive aren't those who avoid AI, nor those who blindly trust it — they're the ones who use it as a powerful junior assistant while maintaining deep judgment.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🗺️</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Strategic Career Thinking</div>
+        <div class="soft-skill-desc">Every 6 months, ask yourself: what skill made me most valuable this period? What would make me significantly more valuable in the next 12 months? Intentional skill selection — not just "learning interesting things" — is what separates engineers who advance quickly from those who plateau.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🔋</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Burnout Prevention — The 48-Month Meta-Skill</div>
+        <div class="soft-skill-desc">Four years is a marathon, not a sprint. Signs you're heading toward burnout: you stop shipping things and just read docs, every session feels like guilt instead of progress, you haven't shipped anything to GitHub in 3+ weeks. The fix is always the same: shrink the unit of work until momentum returns. Instead of 'learn Kubernetes this week', make it 'get one pod running in a local cluster today.' Small wins compound. Protect 1–2 evenings per week with zero tech. Exercise consistently — it directly improves deep work capacity. Burnout recovers slower than people expect; prevention is dramatically easier than recovery.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">🇩🇪</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Language as a Career Moat (German Track)</div>
+        <div class="soft-skill-desc">A Platform Engineer with CKA + AWS SAA is competitive anywhere. A Platform Engineer with CKA + AWS SAA + B1 German is rare. Germany's EU Blue Card requires B1 and a job offer — both become realistic by graduation if you start at A2 now and do 20 minutes daily. The Dutch, Austrian, and Swiss markets accept German at B1 too. This is a 4-year parallel investment that costs 20 minutes a day and opens a salary multiplier (average Platform Engineer salary in Germany: €65,000–95,000/year). Don't wait until Phase 8 to think about this.</div>
+      </div>
+    </div>
+
+    <div class="soft-skill-item">
+      <div class="soft-skill-emoji">💼</div>
+      <div class="soft-skill-content">
+        <div class="soft-skill-name">Salary Negotiation</div>
+        <div class="soft-skill-desc">Never accept the first offer. Research market rates on Glassdoor, Blind, and Levels.fyi before every interview process. Always get at least 3 competing offers — the first offer is leverage, not the destination. Learn to say: "I'm excited about this role. Based on my research, I was expecting something closer to X — is there flexibility?" The silence after that sentence is not awkward; it's working. Engineers who negotiate consistently earn 15–30% more over the first 5 years of their career than those who don't.</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="tips-closing">
+    <div class="tips-closing-text">
+      You started this as a first-year CS student curious about the cloud.<br/>
+      If you finish it, you'll be a <strong>DevSecOps & Cloud Security Engineer with 4 years of intentional practice</strong>,<br/>
+      5 industry certifications, a real security portfolio, and a threat modeling mindset<br/>
+      that most engineers take a decade to develop — if they develop it at all.<br/><br/>
+      <em>The roadmap was never the destination — it was the discipline of thinking like both an attacker and a defender.</em><br/>
+      <strong>Build something secure every week. The rest takes care of itself.</strong>
+    </div>
+  </div>
+
+</section>
+
+</main>
+
+<script>
+/**
+ * ─────────────────────────────────────────────
+ * ORIGINAL CONTENT DATA
+ * (Extracted from the provided HTML to process programmatically)
+ * ─────────────────────────────────────────────
+ */
+const phasesData = [
+  {
+    id: 0, title: "Security Mindset &<br/>Developer Foundations", kicker: "// Months 1–4 · Orientation + Think Like an Attacker", badge: "🧭", pc: "--p0",
+    germanTarget: { level: "A2", milestone: "Establish daily habit — 20 min/day. Target: solid A2 by Month 4.", progress: 15 },
+    subtitle: "Build the hacker's mindset before writing a single cloud config. Every engineer here learns tools AND threat thinking from day one.",
+    pills: ["Months 1–4", "~8 hrs/week", "No cert yet"], aiWidth: "55%", aiText: "Medium — AI Helps Here, Build Deep Understanding Anyway",
+    uniSync: { title: "🎓 University Sync + 🔐 Security Mindset from Day One", html: "Your CS courses (Data Structures, Intro to Programming, Discrete Math) are already building the logic brain you need for security engineering. <strong>Don't separate your degree from this roadmap</strong> — treat them as one. The algorithms you study in class are the same ones inside Kubernetes schedulers, and the discrete math behind cryptographic protocols.<br/><br/><strong>🔐 Security mindset starts now:</strong> From day one, ask of every system you encounter: <em>What can go wrong? Who could abuse this? What data is exposed?</em> This habit of adversarial thinking is the core skill that makes a DevSecOps engineer — and it's built by practice, not by reading a textbook.<br/><br/><strong>Time Realism:</strong> First semester is harder than expected. If 8 hrs/week feels like too much during exam weeks — drop to 3–4 hrs and focus only on Git + Terminal. Consistency over 4 years beats intensity over 2 months. The roadmap won't expire.<br/><br/><strong>⏸️ Exam-Period Fallback (applies to every phase):</strong> When university exams hit, pick one item from the current phase that gives you 80% of the value. For Phase 0, that item is Git. Practice branching and rebasing in 20-minute sessions. Everything else can wait.<br/><br/><strong>🇩🇪 German — Start Now, Not Later:</strong> If you're studying German, this phase is the right time to establish the daily habit. 20 minutes/day during commute or between sessions costs nothing and stacks invisibly. Target: A2 solid by Month 12, B1 by Month 24. B1 is the threshold for Germany's EU Blue Card — which, combined with your security certs and experience, is a realistic relocation path by graduation. Don't wait until Phase 8 to think about this." },
+    goal: "Build the <strong>daily habits, foundational tools, and security mindset</strong> every professional security engineer uses. Set up your development environment, learn Git deeply, get comfortable in the terminal, start writing Python — and begin thinking like an attacker from week one. These four months are about <strong>becoming an engineer AND a security thinker</strong> simultaneously.",
+    skills: [
+      { name: "Terminal & Shell Basics", badge: "Day 1 — Navigation Only", icon: "⌨️", desc: "Navigation, file manipulation, pipes, redirection, environment variables. <strong>Scope boundary:</strong> this phase covers orientation — moving around, reading files, understanding the environment. <strong>Deep Bash scripting (loops, functions, error handling) lives in Phase 1</strong>, where it belongs alongside Linux mastery. Don't skip ahead — build the mental model correctly from the start. The terminal is your cockpit for the next 40 years.", res: ["The Missing Semester (MIT)|free", "explainshell.com|free"] },
+      { name: "Git & GitHub Mastery", badge: "Essential", icon: "📁", desc: "Commits, branches, merges, pull requests, rebasing, conflict resolution. Every cloud config, pipeline, and IaC file lives in Git. Go deeper than the basics — understand the mental model.", res: ["Pro Git Book (free)|free", "Learn Git Branching|free", "شرح Git بالعربي — Elzero Web School (YouTube)|free"] },
+      { name: "Python — Scripting Focus", badge: "High Priority", icon: "🐍", desc: "Variables, loops, functions, file I/O, APIs, error handling, modules, virtual environments. Focus on scripting patterns used in DevOps automation — not web frameworks. <strong>Important:</strong> You're laying the foundation for boto3 (AWS automation), Ansible modules, and Kubernetes Python clients later. Build clean habits now — every shortcut you take here comes back in Phase 3.", res: ["Automate the Boring Stuff|free", "Python Docs|free", "Real Python (scripting)|free", "Codezilla — Python بالعربي (YouTube)|free"] },
+      { name: "Markdown & Technical Writing", badge: "Underrated", icon: "✍️", desc: "READMEs, documentation, runbooks. Engineers who write clearly get promoted faster. Document every project from day one. This habit compounds enormously over 4 years.", res: ["markdownguide.org|free"] },
+      { name: "VS Code & Dev Environment", badge: "Setup", icon: "🏗️", desc: "Extensions, debugging, integrated terminal, SSH remote, settings sync, keyboard shortcuts. Your IDE is your workshop. Set it up properly once — it pays dividends for years.", res: ["VS Code Docs|free", "Vim Adventures (fun)|free"] },
+      { name: "Security Fundamentals & Mindset", badge: "Start Here", icon: "🔐", desc: "How computers get hacked: social engineering, phishing, weak credentials, unpatched software, misconfigurations. The CIA triad (Confidentiality, Integrity, Availability). The difference between vulnerabilities, exploits, and attacks. Play OverTheWire Bandit (first 10 levels) to start thinking like an attacker. Read one security incident postmortem per week — Cloudflare, Okta, and CircleCI all publish excellent ones.", res: ["OverTheWire: Bandit|free", "HackerOne Hacktivity (real bug reports)|free", "Krebs on Security|free"] },
+      { name: "AI Tools Orientation", badge: "Start Now", icon: "🤖", desc: "GitHub Copilot, Claude, ChatGPT for learning and coding help. The key rule: <strong>understand every line the AI generates before using it</strong>. Use AI to learn faster, never to skip understanding.", res: ["Claude.ai (free tier)|free", "GitHub Copilot (student free)|free"] },
+      { name: "SQL & Databases Foundations", badge: "Essential", icon: "🗄️", desc: "PostgreSQL basics: SELECT, INSERT, UPDATE, DELETE, JOINs, indexes, transactions, EXPLAIN ANALYZE. Every cloud engineer eventually debugs a slow query or manages an RDS instance — build the foundation now so RDS, DynamoDB, and Vault dynamic secrets make intuitive sense later.", res: ["PostgreSQL Tutorial (postgresqltutorial.com)|free", "pgExercises.com|free", "SQLZoo|free", "TablePlus (free tier)|free"] }
+    ],
+    projects: [
+      "Create a polished GitHub profile README — your professional home page from day one",
+      "Write 5 Python scripts that automate something genuinely useful to you (rename files, fetch weather, parse a CSV)",
+      "Document one of your university assignments on GitHub with a real README and explanation",
+      "Complete MIT's \"The Missing Semester\" — all 11 lectures. It's free and invaluable.",
+      "Set up a local PostgreSQL instance, design a 3-table schema (e.g. users/posts/tags), write JOIN queries, and analyze a slow query with EXPLAIN ANALYZE — fix it with an index"
+    ],
+    checkpoints: [
+      "Navigate, manipulate files, and pipe commands in the terminal without looking anything up",
+      "Explain Git's staging area, branching model, and resolve a merge conflict on your own",
+      "Write a Python script from scratch that reads a file, processes data, and handles errors",
+      "Have at least 3 repositories on GitHub with proper READMEs",
+      "Write a multi-table JOIN query, explain what an index does and why it matters for query speed, and create a Postgres user with restricted permissions using GRANT",
+      "Explain the CIA triad with a real-world example for each; and complete the first 10 levels of OverTheWire Bandit"
+    ]
+  },
+  {
+    id: 1, title: "Linux & OS Hardening<br/>Deep Dive", germanTarget: { level: "A2 Confirmed", milestone: "Month 8: take a free mock Goethe A2 test. Confirmed → begin B1 prep.", progress: 30 },
+    kicker: "// Months 5–8 · Systems Mastery & OS-Level Attack Surface", badge: "🐧", pc: "--p1",
+    subtitle: "90% of cloud infrastructure runs Linux. A security engineer who understands it at the kernel level can defend what others can't even see.",
+    pills: ["Months 5–8", "~10 hrs/week", "No cert yet"], aiWidth: "92%", aiText: "Near-Permanent — OS-Level Defense",
+    uniSync: { title: "🎓 University Sync", html: "Your <strong>Operating Systems course</strong> covers processes, memory management, scheduling, and filesystems in theory. This phase turns that theory into hands-on Linux mastery. <strong>These are the same subject</strong> — one gives you a grade, the other gives you a career skill.<br/><br/><strong>⏸️ Exam-Period Fallback:</strong> During OS exam crunch, drop all new tools. Spend your protected time on OverTheWire: Bandit — it's gamified, low-pressure, runs in a browser with no setup, and still builds real Linux fluency. One level per session is enough. If the week fully collapses, that one Bandit level is your floor. Consistency through finals beats a three-week gap followed by a restart every time.<br/><br/><strong>🇩🇪 German Checkpoint (Month 8):</strong> If you've been at 20 min/day since Phase 0, you're now solid A2. Take a free mock Goethe A2 test to measure where you are — it takes 90 minutes and gives you a realistic score. A2 confirmed opens the formal path: start working toward B1 in parallel with Phase 2. B1 is the EU Blue Card language threshold.<br/><br/><strong>📝 Start Writing Now:</strong> Create a dev.to account this phase. Write one post — something short and honest, like 'What Linux taught me that my university OS course didn't.' It doesn't need to be polished. It needs to exist. Engineers who start writing at Month 8 have 40+ posts by Month 48. Engineers who plan to start writing 'later' usually never do." },
+    goal: "Become <strong>genuinely fluent in Linux and OS-level security</strong> — not just able to run commands, but able to harden, audit, and detect threats at the OS level. A security engineer who understands Linux at kernel depth can defend what others cannot even see, and that skill does not expire.",
+    skills: [
+      { name: "Linux Filesystem & Permissions", badge: "Core", icon: "📂", desc: "FHS hierarchy, inodes, hard/soft links, chmod/chown, ACLs, sticky bits, SUID/SGID. The Linux permission model is the foundation of cloud IAM — understanding it at the OS level makes cloud security intuitive and permanent.", res: ["Linux Journey (free)|free", "TLCL Book (free)|free", "لينكس بالعربي — قناة Muhannad (YouTube)|free"] },
+      { name: "Processes, Signals & systemd", badge: "Core", icon: "⚙️", desc: "Process management, ps/top/htop, kill signals, cron jobs, systemd units, journalctl. Understanding how services start, stop, and crash is essential for debugging cloud workloads and Kubernetes pods.", res: ["systemd man pages|free", "Linux Foundation tutorials|free"] },
+      { name: "Bash Scripting (Intermediate)", badge: "High Priority — Builds on Phase 0 Terminal", icon: "🔧", desc: "Conditionals, loops, functions, arrays, getopts, trap, heredocs, error handling, logging. <strong>This is the direct continuation of Phase 0's terminal basics</strong> — you learned the cockpit, now you automate it. Bash scripts run inside every CI/CD pipeline, Docker entrypoint, and Kubernetes init container. Learn it properly — not just copy-paste.", res: ["Bash Guide (wooledge.org)|free", "ShellCheck tool|free"] },
+      { name: "Storage & Disk Management", badge: "Important", icon: "💾", desc: "Partitions, LVM, mount points, fstab, df/du, disk I/O analysis with iostat. Cloud storage (EBS, Persistent Disks) is just virtualized versions of these concepts — understanding the real thing makes the virtual obvious.", res: ["TLCL Chapters 15–16|free"] },
+      { name: "SSH, GPG & Key Management", badge: "Essential", icon: "🔐", desc: "SSH key generation, config file, agent forwarding, tunneling, GPG signing and verification, sshd_config hardening (disable root login, restrict ciphers, enforce key-only auth). SSH is the primary entry point to every cloud server — securing it properly is your first real defensive act.", res: ["SSH Academy (free)|free", "GPG for Developers|free", "ssh-audit tool|free"] },
+      { name: "Performance Analysis & Intrusion Detection", badge: "AI-Resistant", icon: "📊", desc: "CPU/memory/IO analysis using vmstat, sar, strace, lsof, ss, perf. Detecting anomalies — unexpected processes, unusual network connections, modified system files — by reading these signals from first principles is a rare security skill that AI cannot automate. auditd for syscall-level audit logging.", res: ["Brendan Gregg's Linux Perf|free", "USE Method|free", "auditd Documentation|free"] }
+    ],
+    projects: [
+      "Set up an Ubuntu Server VM (no GUI) and install & configure nginx entirely from the CLI — no help from the GUI",
+      "Write a production-quality bash backup script: timestamp, compression, error handling, logging, email notification option",
+      "Create a systemd service that runs your Python script as a background daemon on boot — with proper logging",
+      "Complete OverTheWire: Bandit (all 34 levels) — it teaches Linux internals through security challenges",
+      "Set up a multi-user Linux environment with restricted permissions, auditing, and SSH key-only access",
+      "Harden a fresh Ubuntu Server using the CIS Level 1 benchmark: disable unused services, configure auditd, restrict SUID/SGID binaries, and validate with Lynis security audit score"
+    ],
+    checkpoints: [
+      "Explain the Linux boot process from BIOS/UEFI to systemd without notes",
+      "Diagnose a high-CPU process, trace its system calls, and kill it cleanly",
+      "Write a bash script with proper error handling, logging, and idempotency",
+      "Configure SSH key-only access and explain exactly why password auth is disabled",
+      "Finish all 34 levels of OverTheWire: Bandit",
+      "Run Lynis on a fresh Ubuntu server, explain the top 5 findings, and fix each one with a justification for why the control matters"
+    ]
+  },
+  {
+    id: 2, title: "Network Security &<br/>Attack Surface Analysis", germanTarget: { level: "B1 Begins", milestone: "Month 9–12: start Netzwerk neu B1. Read AWS docs occasionally in German.", progress: 45 },
+    kicker: "// Months 9–12 · Connectivity & Threat Modeling", badge: "🌐", pc: "--p2",
+    subtitle: "A security engineer who understands how packets actually move can find and close attack paths that others never detect. This is the permanent foundation of your defense skillset.",
+    pills: ["Months 9–12", "~10 hrs/week", "CompTIA Sec+ optional"], aiWidth: "88%", aiText: "Very High — Network Forensics & Defense",
+    uniSync: { title: "🎓 University Sync", html: "Your <strong>Computer Networks course</strong> covers OSI model, TCP/IP, routing, DNS, and HTTP. This phase runs perfectly in parallel — apply every concept you study in class to real labs. Use Wireshark to <em>see</em> what your textbook describes. Theory + hands-on = retained knowledge.<br/><br/><strong>⏸️ Exam-Period Fallback:</strong> During Networks exam week, lean into theory — read RFCs, watch Professor Messer videos, do subnetting practice. These are exam-compatible AND roadmap-advancing at the same time. This is the one phase where studying for your degree and studying for the roadmap is literally the same activity.<br/><br/><strong>🇩🇪 German — B1 Begins (Month 9–12):</strong> If A2 is confirmed, this is the phase to begin B1 preparation. Resources: Netzwerk neu B1 coursebook (~200 EGP), Deutsche Welle free online course, Tandem language exchange app (free, pair with a German speaker who wants to practice Arabic). B1 reading comprehension aligns well with technical documentation in German — start reading translated AWS docs or CNCF blog posts in German occasionally. By end of this phase: B1 mid-level is a realistic target if you've been consistent." },
+    goal: "Understand how data moves through networks deeply enough to <strong>map attack surfaces, detect anomalies, and design defensible cloud architectures</strong>. When you configure VPCs, security groups, WAFs, and firewall rules, you'll understand exactly what threat each control mitigates — and what it doesn't.",
+    skills: [
+      { name: "TCP/IP Model & Protocols", badge: "Core", icon: "🗂️", desc: "IP addressing (IPv4/v6), subnetting (CIDR), ARP, ICMP, TCP handshake, UDP, DNS, DHCP, NAT. Every VPC subnet, security group rule, and load balancer config maps directly to these concepts.", res: ["Professor Messer (free)|free", "subnettingpractice.com|free", "شرح CCNA بالعربي — Ahmed Nabil (YouTube)|free"] },
+      { name: "Routing & Switching Concepts", badge: "Core", icon: "🔀", desc: "Static vs dynamic routing, BGP basics, VLANs, STP, inter-VLAN routing. Cloud routing tables, Transit Gateways, and BGP peering in Direct Connect all originate from these foundational concepts.", res: ["Cisco Packet Tracer (free)|free", "NetworkChuck YouTube|free"] },
+      { name: "Wireshark & Packet Analysis", badge: "Rare Skill", icon: "🔍", desc: "Capture/display filters, following TCP streams, analyzing DNS/HTTP/TLS handshakes. The ability to see inside network traffic to debug production issues is a skill very few cloud engineers have — and extremely valuable during incidents.", res: ["Wireshark Docs (free)|free", "Practical Packet Analysis|free"] },
+      { name: "TLS/SSL & PKI Basics", badge: "Essential", icon: "🔒", desc: "Certificate chains, CA hierarchy, mTLS, certificate lifecycle management, Let's Encrypt. Every HTTPS endpoint, Kubernetes API server, and service mesh relies on TLS. Understanding PKI deeply is rare and AI-resistant.", res: ["TLS Illustrated (free)|free", "Let's Encrypt Docs|free"] },
+      { name: "Firewalls & Basic Security", badge: "Important", icon: "🧱", desc: "iptables/nftables, stateful vs stateless rules, DMZ concepts, port scanning with nmap. These translate directly to AWS Security Groups, NACLs, and WAF rules — understanding the underlying model makes cloud security intuitive.", res: ["iptables tutorial|free", "nmap book (free online)|free"] },
+      { name: "HTTP/S, REST & API Concepts", badge: "Core", icon: "🌍", desc: "HTTP methods, status codes, headers, cookies, CORS, REST principles, API authentication (JWT, OAuth, API keys). Every cloud service exposes APIs. Every microservice communicates over HTTP. This is the language of the cloud.", res: ["MDN HTTP Docs (free)|free", "REST API Tutorial|free"] },
+      { name: "Load Balancers & Reverse Proxies", badge: "Essential", icon: "⚖️", desc: "Layer 4 vs Layer 7 load balancing, nginx as a reverse proxy: upstream blocks, health checks, SSL termination, connection pooling. Understanding the full request path (DNS → CDN → LB → upstream → app → DB) is the prerequisite for AWS ALB/NLB, Kubernetes Ingress, and Envoy.", res: ["nginx Docs (free)|free", "HAProxy Docs (free)|free", "High Performance Browser Networking (free)|free", "Load Balancing (Cloudflare Blog)|free"] },
+      { name: "Threat Modeling (STRIDE)", badge: "AI-Resistant", icon: "🗺️", desc: "Systematically identify threats against a system using STRIDE (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege). Draw data flow diagrams, identify trust boundaries, and rate findings with DREAD/CVSS scoring. Threat modeling is the highest-leverage security activity — catching design flaws before code is written saves enormous remediation cost. A cloud engineer who threat-models by default is irreplaceable.", res: ["OWASP Threat Modeling|free", "Microsoft Threat Modeling Tool|free", "Threat Modeling Book (Shostack)|paid"] },
+      { name: "DNS Deep Dive", badge: "Essential", icon: "🔎", desc: "Full resolution chain (recursive resolver → root → TLD → authoritative NS), TTL, record types in depth (A, AAAA, CNAME, MX, TXT, SRV, PTR), split-horizon DNS, and DNSSEC. Maps directly to CoreDNS inside Kubernetes and Route53 routing policies in AWS.", res: ["How DNS Works (dnsimple.com)|free", "mess with dns (wizard zines)|free", "CoreDNS Docs|free"] }
+    ],
+    projects: [
+      "Build a simulated network in GNS3 or Cisco Packet Tracer: 3 routers, 2 VLANs, static and OSPF routing configured",
+      "Capture and analyze a full TLS handshake in Wireshark — identify every packet and explain exactly what it does",
+      "Set up a self-hosted nginx reverse proxy with a valid TLS cert (Let's Encrypt) on your Linux VM",
+      "Write a Python script that calls 3 public REST APIs and aggregates the results into a formatted report",
+      "Subnet a given IP address space for a fictional 5-department company — document your full design rationale",
+      "Configure nginx as a Layer 7 load balancer across 3 upstream instances: add health checks, connection limits, and sticky sessions — then break one instance and observe failover in real time",
+      "Run an nmap scan against your own Linux VM, enumerate open ports and services, then apply firewall rules to close every unnecessary exposure — document your attack surface before and after",
+      "Capture a TLS handshake and a DNS query in Wireshark; then perform a threat model of a simple 3-tier web app — identify 5 STRIDE threats and propose a control for each"
+    ],
+    checkpoints: [
+      "Subnet any IPv4 address space from memory and explain CIDR notation clearly",
+      "Open Wireshark and identify a TLS handshake, a DNS query, and a TCP retransmission in a live capture",
+      "Explain why TLS certificate chains work and what \"certificate validation\" actually checks",
+      "Write iptables rules to allow/deny specific traffic and explain each flag",
+      "Perform a STRIDE threat model of a 3-tier app from a blank diagram — list at least 8 threats and map each to a concrete mitigation"
+    ]
+  },
+  {
+    id: 3, title: "Cloud Security Core &<br/>Secure Infrastructure as Code", germanTarget: { level: "B1 Mid", milestone: "Month 18: B1 mid-level target. Use Tandem app for weekly German conversation.", progress: 60 },
+    kicker: "// Months 13–18 · Cloud Entry + Security Baseline", badge: "☁️", pc: "--p3",
+    subtitle: "Enter the cloud the right way — with security baked in from line one of Terraform. Earn your first industry certification AND build a secure-by-default IaC posture.",
+    pills: ["Months 13–18", "~12 hrs/week", "🏆 AWS SAA-C03"], aiWidth: "80%", aiText: "High — Security Design Judgment",
+    customHTML: `<div class="uni-sync"><div class="uni-sync-title">💰 AWS Lab Cost Warning</div><p>AWS labs can get expensive fast. <strong>On day one: set a $10/month budget alert in AWS Billing</strong>, tag every resource you create, and always destroy practice infrastructure after you're done. Use the free tier wisely — t3.micro, 5 GB S3, 1M Lambda requests/month are all free. A $20 monthly learning bill is fine. A $200 surprise bill is not.</p></div>
+    <div class="uni-sync"><div class="uni-sync-title">💳 4-Year Certification Budget — Plan This Now</div><p>Certification exams are not free. Budget for this from the start so a surprise invoice doesn't derail you mid-roadmap. Rough costs in USD (prices change — verify before booking):</p><table style="width:100%;margin-top:10px;font-size:12px;border-collapse:collapse;"><tr style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;"><td style="padding:4px 8px 4px 0;">PHASE</td><td style="padding:4px 8px;">CERT</td><td style="padding:4px 8px;">EXAM FEE</td><td style="padding:4px 8px;">STUDY COST</td></tr><tr style="border-top:1px solid var(--border);"><td style="padding:5px 8px 5px 0;color:var(--p3);">Phase 3</td><td style="padding:5px 8px;">AWS SAA-C03</td><td style="padding:5px 8px;">~$300 USD</td><td style="padding:5px 8px;">~$30 (Cantrill or TDC)</td></tr><tr style="border-top:1px solid var(--border);"><td style="padding:5px 8px 5px 0;color:var(--p4);">Phase 4</td><td style="padding:5px 8px;">CKA</td><td style="padding:5px 8px;">~$395 USD</td><td style="padding:5px 8px;">~$50 (KodeKloud)</td></tr><tr style="border-top:1px solid var(--border);"><td style="padding:5px 8px 5px 0;color:var(--p6);">Phase 6</td><td style="padding:5px 8px;">AWS Security Specialty</td><td style="padding:5px 8px;">~$300 USD</td><td style="padding:5px 8px;">~$20 (Stephane Maarek)</td></tr><tr style="border-top:1px solid var(--border);"><td style="padding:5px 8px 5px 0;color:var(--p8);">Phase 8</td><td style="padding:5px 8px;">CKS</td><td style="padding:5px 8px;">~$395 USD</td><td style="padding:5px 8px;">~$50 (KodeKloud)</td></tr><tr style="border-top:2px solid var(--border-hi);"><td style="padding:6px 8px 6px 0;font-weight:600;color:var(--white);" colspan="2">Total (4 exams)</td><td style="padding:6px 8px;font-weight:600;color:var(--white);">~$1,390</td><td style="padding:6px 8px;">~$150</td></tr></table><p style="margin-top:10px;font-size:12px;">💡 <strong>Strategy:</strong> CNCF bundles CKA+CKS at a discount. Watch for Linux Foundation promotions (Black Friday typically offers 30–40% off). Book your exam <em>before</em> you start studying — the deadline creates accountability. If a retake is needed, CNCF includes one free retake per purchase. Save $150–200/month in a dedicated cert fund from Month 1.</p></div>
+    <div class="uni-sync"><div class="uni-sync-title">🗄️ University Sync — Databases Course</div><p>Your <strong>Databases course</strong> covers relational models, SQL, normalization, and transactions. This is directly applicable here. AWS RDS is managed MySQL/PostgreSQL — the SQL you write in your exam is the same SQL that runs in production. DynamoDB extends your knowledge into NoSQL. <strong>Don't treat them as separate subjects.</strong></p></div>
+    <div class="egypt-box"><div class="egypt-box-title">🇪🇬 Egyptian Market — Who's Hiring</div><p>These companies actively hire cloud-adjacent engineers:</p><div class="egypt-tags"><span class="egypt-tag">Vodafone Egypt</span><span class="egypt-tag">IBM Egypt</span><span class="egypt-tag">Paymob</span><span class="egypt-tag">Instabug</span><span class="egypt-tag">Orange Egypt</span><span class="egypt-tag">Huawei Egypt</span></div><p style="margin-top:8px; font-size:12px;">AWS SAA-C03 is the single most recognized cert in the Egyptian cloud market. Getting it by Month 18 makes you immediately visible to recruiters — even before graduation.</p></div>`,
+    goal: "Understand cloud architecture deeply enough to <strong>design, build, and secure multi-tier systems</strong> — and pass the AWS Solutions Architect Associate exam. The key discipline: <strong>never use the AWS Console to build anything permanent</strong>, and never deploy a resource without a security control attached to it. Everything goes through Terraform, every resource has a security policy.",
+    skills: [
+      { name: "AWS Core Services + Security Controls", badge: "Critical", icon: "☁️", desc: "EC2, S3, VPC, IAM, RDS, Lambda, Route53, CloudFront, ELB, Auto Scaling — and the security control for each: S3 Block Public Access, EC2 IMDSv2 enforcement, RDS encryption at rest, Lambda resource-based policies. Never learn a service without simultaneously learning how to lock it down.", res: ["AWS Skill Builder (free)|free", "Adrian Cantrill SAA-C03|paid", "AWS Security Workshop|free", "AWS بالعربي — كورس Udemy (ابحث: AWS Arabic)|paid"] },
+      { name: "Terraform & IaC", badge: "Essential", icon: "🏗️", desc: "HCL syntax, remote backends (S3 + DynamoDB locking), state isolation per environment, modules, Terragrunt for DRY multi-env configs, drift detection via terraform plan in CI, and Terratest for module integration testing. Never use the console to build anything permanent — everything goes through code.", res: ["HashiCorp Learn (free)|free", "Terraform Docs|free", "Terragrunt Docs (free)|free", "Terratest (GitHub)|free", "Terraform: Up & Running (book)|paid"] },
+      { name: "AWS IAM & Cloud Security (Deep)", badge: "AI-Resistant", icon: "🔑", desc: "Roles, policies, permission boundaries, SCPs, resource-based policies, IAM Access Analyzer, AWS Config rules for drift detection, CloudTrail for API-level audit logging. IAM misconfigurations are the #1 cause of cloud breaches. Every policy you write must follow least-privilege from day one — not retrofitted later.", res: ["AWS IAM Workshop (free)|free", "AWS Security Workshop|free", "cloudsplaining (IAM analyzer)|free"] },
+      { name: "AWS VPC & Network Architecture", badge: "Core", icon: "🌐", desc: "Subnets, route tables, IGW, NAT Gateway, VPC Peering, Security Groups vs NACLs.", res: ["AWS VPC Workshop (free)|free"] },
+      { name: "boto3 & AWS SDK (Python)", badge: "Unlock Python Power", icon: "🐍", desc: "Programmatic AWS resource management using Python. EC2 lifecycle automation, S3 operations, IAM auditing scripts, Lambda deployment pipelines. This is where your Phase 0 Python investment pays off — you're now writing scripts that control real cloud infrastructure, not just files on disk.", res: ["boto3 Docs (free)|free", "AWS SDK Examples GitHub|free"] },
+      { name: "CloudWatch & Cost Management", badge: "Practical Must-Have", icon: "📊", desc: "Metrics, alarms, log groups, dashboards, Cost Explorer, Budget Alerts, Trusted Advisor. Two engineers with equal AWS knowledge are separated by whether they understand costs and observability. Never deploy something you can't measure and can't price.", res: ["AWS CloudWatch Docs|free", "AWS Cost Management Docs|free"] },
+      { name: "Cloud Security Posture (CSPM)", badge: "Essential for DevSecOps", icon: "🔍", desc: "Prowler for automated CIS Benchmark scanning of your AWS account, AWS Security Hub for centralized finding aggregation, AWS GuardDuty for threat detection (anomaly-based). ScoutSuite for multi-cloud security auditing. The discipline: run Prowler against every account before calling a phase project complete — treat findings as failing tests.", res: ["Prowler (open source)|free", "AWS Security Hub Docs|free", "ScoutSuite (GitHub)|free"] },
+      { name: "Message Queues & Event-Driven Architecture", badge: "Essential", icon: "📨", desc: "SQS (standard vs FIFO, dead-letter queues, visibility timeout), SNS (fan-out pattern, filtering), EventBridge (event buses, schema registry), and Kafka concepts (topics, partitions, consumer groups, offset management). Async messaging decouples services permanently — every microservices decision in later phases assumes you understand this.", res: ["AWS SQS Docs|free", "AWS EventBridge Docs|free", "Kafka: The Definitive Guide (free)|free", "AWS Event-Driven Workshop (free)|free"] }
+    ],
+    projects: [
+      "Deploy a full 3-tier architecture (ALB + EC2 Auto Scaling + RDS Multi-AZ) using Terraform only",
+      "Build a serverless pipeline: S3 upload → Lambda → SNS notification → DynamoDB logging, all via IaC",
+      "Write a Terraform module for a reusable, opinionated VPC — publish it as open source on GitHub with Terratest tests",
+      "Write a boto3 script that audits your AWS account: lists all running EC2s, checks for public S3 buckets, and flags IAM users with no MFA — outputs a formatted report",
+      "Build an event-driven image processing pipeline: image uploaded to S3 → EventBridge rule → SQS queue → Lambda consumer → result stored in DynamoDB. Include a dead-letter queue for failed processing and a CloudWatch alarm on DLQ depth.",
+      "Run Prowler against your AWS lab account — document all CRITICAL and HIGH findings, fix the top 10, and re-run to verify. Write a one-page remediation report as if presenting to a CISO."
+    ],
+    checkpoints: [
+      "Design a multi-tier AWS architecture on a whiteboard and justify every service choice",
+      "Write Terraform that creates, modifies, and destroys AWS infrastructure — and explain what happens to state when you rename a resource",
+      "Explain IAM least-privilege and write a policy that grants only what's needed",
+      "Write a boto3 script from scratch without looking up method signatures",
+      "Explain the difference between SQS, SNS, and EventBridge — and for a given scenario, justify which one (or which combination) you'd choose and why",
+      "Explain the difference between IAM roles, permission boundaries, and SCPs — and demonstrate an over-permissioned IAM policy, identify what it grants, and rewrite it as least-privilege"
+    ]
+  },
+  {
+    id: 4, title: "Container Security &<br/>Kubernetes Hardening", germanTarget: { level: "B1 Solid", milestone: "Month 24: B1 solid — EU Blue Card language threshold reached.", progress: 75 },
+    kicker: "// Months 19–24 · Containers & K8s Attack Surface", badge: "🐳", pc: "--p4",
+    subtitle: "Containers are the unit of deployment — and the unit of attack. Kubernetes is the OS of the cloud AND its largest attack surface. You must master both operationally and from a threat perspective.",
+    pills: ["Months 19–24", "~12 hrs/week", "🏆 CKA Cert"], aiWidth: "85%", aiText: "High — Deep Systems Knowledge + Container Forensics",
+    customHTML: `<div class="uni-sync"><div class="uni-sync-title">💳 CKA Exam Cost & Booking Strategy</div><p>The CKA exam costs ~$395 USD and includes one free retake. Book it at the <strong>start of Month 22</strong>, not at the end of Month 24 — the deadline pressure will force you to study faster. The Linux Foundation frequently runs 30–40% discount promotions; check their site or use coupon codes from the KodeKloud community. The exam is fully hands-on (no multiple choice) — you'll be in a live Kubernetes cluster fixing problems under time pressure. This makes it one of the most respected certs in the industry: you can't fake your way through it.</p></div>
+    <div class="uni-sync"><div class="uni-sync-title">⏱️ CKA Timeline Flexibility — Read This</div><p>Phase 4 runs during your 3rd university year — which is typically heavier than Years 1 and 2. If Month 24 arrives and you're not CKA-ready, <strong>that is not failure</strong>. The roadmap has zero flexibility on quality — you don't move on until you can clear the checkpoints. It has full flexibility on timing. <strong>A 2-month extension to Month 26 is the correct decision</strong> if it means you pass on the first attempt with real understanding, rather than cramming and passing by luck. The cert date on your CV matters far less than what you actually know. One signal to watch: if you can consistently solve Killer.sh practice scenarios under 20 minutes each, you're ready — regardless of which month you're in.</p></div>
+    <div class="uni-sync"><div class="uni-sync-title">🎓 Internship Timing — This Phase is the Window</div><p>By Month 22 you have: AWS SAA, Linux fluency, Terraform, and Kubernetes in progress. This is your strongest internship application window. Start applying for summer internships in Month 20 even if you haven't finished the phase — companies hire <em>ahead of time</em>, not when you're ready. Target companies running Kubernetes in production (Instabug, Paymob, Breadfast, any AWS/GCP partner in Egypt). Your GitHub portfolio is your primary credential at this stage.</p></div>
+    <div class="uni-sync"><div class="uni-sync-title">⏸️ Exam-Period Fallback</div><p>During exam seasons: drop to <strong>6 hrs/week minimum</strong>. Protect the hands-on Kubernetes lab time above all else — CKA is muscle memory, and gaps longer than 2 weeks hurt retention badly. If a week goes to zero, spend the next session doing a full cluster rebuild from scratch (kubeadm init to running app) before resuming where you left off.</p></div>`,
+    goal: "Operate Kubernetes confidently at the <strong>cluster administrator and security hardening level</strong> — not just deploying apps, but locking down every layer of the container stack. Pass the CKA by month 24. Understand the container attack surface deeply enough to both exploit and defend it.",
+    skills: [
+      { name: "Docker & Containerization", badge: "Foundation", icon: "🐳", desc: "Dockerfile best practices, multi-stage builds, layer caching, build secrets, Compose for local dev. Critical: build images that run as non-root, use minimal base images (distroless or alpine), and understand exactly what each RUN layer costs you in size and cache invalidation. Every Kubernetes pod starts here.", res: ["Docker Docs|free", "Dockerfile best practices (Docker)|free", "dive (image layer inspector)|free"] },
+      { name: "Kubernetes Core (CKA Level)", badge: "Critical", icon: "⎈", desc: "Pods, Deployments, DaemonSets, StatefulSets, Jobs, CronJobs, Services (ClusterIP/NodePort/LoadBalancer), Ingress, ConfigMaps, Secrets, RBAC, LimitRanges, ResourceQuotas. Go deep on the control plane: how does the API server, scheduler, controller-manager, and etcd interact when you run kubectl apply? Understand the reconciliation loop — it explains everything about how Kubernetes works.", res: ["Kubernetes Docs|free", "KodeKloud CKA|paid", "Killer.sh exam simulator|paid"] },
+      { name: "Kubernetes Networking (CNI Deep Dive)", badge: "AI-Resistant", icon: "🌐", desc: "How Kubernetes networking actually works: the CNI plugin model, how pods get IP addresses, the kube-proxy iptables/IPVS chain, DNS resolution inside a cluster (CoreDNS). Practice with Cilium or Calico. Write NetworkPolicies that enforce real micro-segmentation — isolating frontend, backend, and database namespaces. Debugging network issues in Kubernetes (pods can't reach each other, DNS not resolving) is a senior-level skill most engineers avoid.", res: ["Kubernetes Networking (Cilium blog)|free", "NetworkPolicy editor (editor.networkpolicy.io)|free", "Cilium Docs|free"] },
+      { name: "Kubernetes Storage (PV/PVC/CSI)", badge: "Essential", icon: "💾", desc: "PersistentVolumes, PersistentVolumeClaims, StorageClasses, dynamic provisioning, access modes (RWO/RWX/ROX), volume binding modes. Understand the CSI driver contract — what happens between your PVC and the EBS volume that appears on the node. StatefulSets with stable network identities and persistent storage. Most tutorials skip storage and pretend everything is stateless — the real world isn't.", res: ["Kubernetes Storage Docs|free", "AWS EBS CSI Driver|free"] },
+      { name: "Kubernetes Security (PSA, RBAC & Runtime)", badge: "Critical", icon: "🔐", desc: "Pod Security Admission (PSS/PSA), RBAC least-privilege service accounts, audit logging, seccomp/AppArmor profiles, Falco for runtime threat detection (shell spawned in container, unexpected network connections, privilege escalation). Every deployment you write answers: what identities does this pod have? What can it reach? What syscalls can it make? Can Falco detect if it's compromised at runtime? These questions become second nature.", res: ["Kubernetes Security Best Practices|free", "NSA/CISA K8s Hardening Guide|free", "Falco Docs|free", "Falco Rules (GitHub)|free"] },
+      { name: "Resource Management & Autoscaling", badge: "Production-Critical", icon: "📈", desc: "CPU/memory requests and limits, Quality of Service classes (Guaranteed/Burstable/BestEffort), LimitRanges, ResourceQuotas per namespace. HPA (Horizontal Pod Autoscaler) with CPU and custom metrics, VPA (Vertical Pod Autoscaler), KEDA for event-driven scaling (scale to zero on queue depth). Understanding scheduling: node affinity, taints and tolerations, PodDisruptionBudgets for safe draining.", res: ["KEDA Docs|free", "Kubernetes Autoscaling Guide|free"] },
+      { name: "Helm & Package Management", badge: "Essential", icon: "🚢", desc: "Chart structure, Go templating, values hierarchy, named templates, hooks (pre-install, post-upgrade), chart dependencies, Helmfile for multi-chart environments. Write Helm charts for your own apps — don't just consume public charts. The ability to debug a failing Helm release (helm history, helm rollback, helm template to inspect rendered manifests) is what separates operators from chart consumers.", res: ["Helm Docs|free", "Artifact Hub|free"] },
+      { name: "GitOps with ArgoCD", badge: "Industry Standard", icon: "🔄", desc: "ApplicationSet CRDs, sync strategies (manual vs auto-prune), health checks and custom health assessment, sync hooks, rollback, multi-cluster deployment with a single ArgoCD instance. Understand the pull-based model vs push-based CI/CD and why GitOps is more secure for production. Set up RBAC within ArgoCD so different teams can only deploy to their own namespaces.", res: ["ArgoCD Docs|free", "ArgoCD Best Practices|free"] },
+      { name: "Container Image & Supply Chain Security", badge: "High Priority", icon: "🔗", desc: "Build minimal images (distroless, Alpine) to reduce attack surface, scan with Trivy and Grype (fail pipeline on CRITICAL CVEs), sign images with Cosign+Sigstore, generate SBOMs with Syft, enforce image admission policies with Kyverno or OPA. The SolarWinds and Log4Shell incidents made container supply chain security an executive-level priority — engineers who understand it end-to-end are scarce.", res: ["Trivy (Aqua)|free", "Cosign (Sigstore)|free", "Syft (Anchore)|free", "Grype|free"] },
+      { name: "Go for Cloud Engineers", badge: "Essential", icon: "🐹", desc: "The entire Kubernetes ecosystem is written in Go: kubectl, Helm, ArgoCD, Prometheus, Vault, Terraform. Focus on modules, interfaces, goroutines, the standard library, and client-go for Kubernetes API interaction. Goal: read controller logs and panic traces, write simple operators with controller-runtime, and build custom kubectl plugins.", res: ["Tour of Go (go.dev)|free", "client-go examples (GitHub)|free", "Kubebuilder Book (free)|free", "controller-runtime Docs|free", "100 Go Mistakes (book)|paid"] }
+    ],
+    projects: [
+      "Containerize a 3-service application (frontend, backend, database) with non-root users, distroless images, and a proper Docker Compose dev environment",
+      "Deploy the application to EKS using Helm charts you wrote from scratch — not copied from the internet. Include proper resource requests/limits and a PodDisruptionBudget",
+      "Implement namespace-level network isolation with NetworkPolicies: frontend can reach backend, backend can reach database, nothing else is permitted — verify with a live test",
+      "Deploy a StatefulSet (PostgreSQL) with an EBS-backed PersistentVolumeClaim; simulate a pod restart and verify data survives",
+      "Configure HPA for your backend service, stress-test it with k6, and document the exact scaling timeline with screenshots",
+      "Set up ArgoCD with RBAC: one team's ApplicationSet for staging, another for production, with different sync policies",
+      "Write a simple Kubernetes operator in Go using controller-runtime: watch for a ConfigMap labeled 'auto-restart: true' and restart the pods in the same namespace — package it as a container and deploy it to your EKS cluster",
+      "Perform a hands-on K8s security audit: use kube-bench to check CIS Benchmark compliance on your EKS cluster, fix the top 5 findings, and deploy Falco with a custom rule that fires when a shell is exec'd into a running pod"
+    ],
+    checkpointGroups: [
+      {
+        label: "★ Core — Must Clear Before Moving On",
+        items: [
+          "Explain what a container is at the kernel level: namespaces (pid, net, mnt, uts, ipc), cgroups for resource limits, and the OCI runtime contract",
+          "Explain the full Kubernetes request lifecycle: kubectl apply → API server → etcd → controller-manager → scheduler → kubelet → container runtime",
+          "Debug a CrashLoopBackOff pod with no obvious error message — using events, logs, exec, and node-level inspection",
+          "Write a NetworkPolicy from memory that isolates three namespaces and verify it works",
+          "Set up a service account with a least-privilege Role and RoleBinding for an app; explain why the default service account is dangerous"
+        ]
+      },
+      {
+        label: "◇ Mastery — Target Before Month 24",
+        items: [
+          "Explain the CNI model: how a pod gets its IP, how cross-node pod traffic is routed, what kube-proxy does with iptables",
+          "Implement a StatefulSet with persistent storage; explain the difference between RWO and RWX access modes and when each applies",
+          "Configure HPA scaling and explain the metrics pipeline from the application → metrics-server → HPA controller → scheduler",
+          "Read a Go controller's panic stack trace and identify which reconcile loop failed and why — without having written the controller yourself",
+          "Deploy Falco on your EKS cluster, trigger a shell exec in a running pod, and show the Falco alert firing — then write a custom Falco rule that detects an unexpected outbound connection from a container"
+        ]
+      }
+    ],
+  },
+  {
+    id: 5, title: "DevSecOps Pipelines &<br/>Shift-Left Security", germanTarget: { level: "B1 → B1+", milestone: "Month 30: Begin technical German — read BSI advisories, DACH job postings.", progress: 82 },
+    kicker: "// Months 25–30 · Security in Every Pipeline Stage", badge: "⚡", pc: "--p5",
+    subtitle: "Security that lives only in a final scan is security theater. Build pipelines where SAST, SCA, secrets scanning, container signing, and compliance gates are as mandatory as unit tests.",
+    pills: ["Months 25–30", "~12 hrs/week", "Job Ready 🔐"], aiWidth: "82%", aiText: "High — Security Engineering Judgment",
+    customHTML: `<div class="egypt-box"><div class="egypt-box-title">💼 DevSecOps Job Search Strategy — Egyptian Market</div><p>By Month 30 you're genuinely employable in DevSecOps. Here's how to approach the security job market strategically:</p><div style="margin-top:10px; font-size:12.5px; line-height:1.9;"><strong style="color:var(--white);">Your CV:</strong> Lead with certifications (AWS SAA + CKA + CKS in progress), then GitHub security portfolio links (your SIEM pipeline, your DevSecOps pipeline, your compliance report). Egyptian security hiring managers care about demonstrated hands-on skills over GPA.<br/><strong style="color:var(--white);">Target roles:</strong> "DevSecOps Engineer", "Cloud Security Engineer", "AppSec Engineer", "SOC Engineer L2", "Security Automation Engineer" — search these on LinkedIn Egypt and Wuzzuf.<br/><strong style="color:var(--white);">Approach companies:</strong> IBM Egypt, Vodafone Egypt, Huawei Egypt hire for cloud security roles. Instabug, Paymob hire DevSecOps. CIB, EFG Hermes, HSBC Egypt hire for financial sector security (compliance-heavy, well-paid). Don't wait for postings — connect directly with Security Engineering managers.<br/><strong style="color:var(--white);">Salary context:</strong> Junior DevSecOps in Egypt (2025–2026) ranges EGP 20,000–40,000/month. Remote EU/US security roles pay 3–5x that.</div><div class="egypt-tags" style="margin-top:10px;"><span class="egypt-tag">LinkedIn Egypt</span><span class="egypt-tag">Wuzzuf.net</span><span class="egypt-tag">Forasna</span><span class="egypt-tag">Remote via Upwork</span><span class="egypt-tag">OWASP Egypt Chapter</span></div></div>
+    <div class="uni-sync"><div class="uni-sync-title">🎯 Interview Prep — Start Now, Not at Phase 8</div><p>Technical interviews for cloud/DevOps roles have three layers. Start preparing all three from Month 25 — not at the last checkpoint.</p><p style="margin-top:10px;"><strong style="color:var(--white);">1. System Design (highest weight at mid–senior level)</strong><br/>Practice designing real systems out loud: "Design a URL shortener", "Design a CI/CD system that deploys to 1,000 clusters", "Design a multi-region S3-backed data pipeline." Use the framework: clarify requirements → estimate scale → choose components → draw the diagram → discuss trade-offs → talk about failure modes. Resources: <em>System Design Interview (Alex Xu)</em>, <em>ByteByteGo newsletter (free)</em>.</p><p style="margin-top:10px;"><strong style="color:var(--white);">2. Behavioral (never skip this)</strong><br/>Every engineering interview includes behavioral questions. Use the STAR format (Situation → Task → Action → Result) and prepare 8–10 stories from your projects: a time you debugged something difficult, a time you made a technical decision with incomplete information, a time you pushed back on a bad idea. Write these down. Practice saying them out loud. Improvising in interviews sounds exactly like improvising.</p><p style="margin-top:10px;"><strong style="color:var(--white);">3. DSA (lighter weight for DevOps, but exists)</strong><br/>You don't need LeetCode Hard for cloud engineering roles. Focus on: arrays/strings, hashmaps, trees/graphs (BFS/DFS), basic sorting, and time/space complexity analysis. Solve 2–3 problems per week on NeetCode.io (free). Egyptian tech companies doing remote hiring for EU/US clients will often include an online assessment.</p><p style="margin-top:10px; font-size:12px; color:var(--muted);">💡 Mock interview tip: record yourself answering a system design question on video. Watch it back. The gap between what you think you said and what you actually said is always instructive.</p></div>
+    <div class="uni-sync"><div class="uni-sync-title">🌍 Open Source — Start Before Phase 8</div><p>Open source contributions are listed as a Phase 8 skill, but the right time to start is Phase 5. You're using real tools now — GitHub Actions, ArgoCD, Argo Rollouts. When you hit a bug or a confusing docs page, file a detailed issue instead of moving on. That's your first contribution. Process: file 3 issues in tools you actually use → find one labeled 'good first issue' in any CNCF project → read the contributor guide before writing a single line → keep your first PR under 50 lines. Small PRs get merged. Long PRs sit in review forever. A merged PR in ArgoCD during Phase 5 is worth 10 personal projects on your CV by Phase 8.</p></div>
+    <div class="uni-sync"><div class="uni-sync-title">⏸️ Exam-Period Fallback</div><p>During university exams, protect interview prep above pipeline lab work — it's the highest-leverage activity in short sessions. System design problems and NeetCode fit into exam season; CI/CD pipeline labs need long uninterrupted focus and can be deferred. If the week fully compresses, the floor is two hours: one system design problem from ByteByteGo (read, diagram, check solution), one NeetCode medium, and one section of the GitHub Actions docs. Distributed practice beats a 6-hour catch-up sprint every time.</p></div>`,
+    goal: "Design and operate <strong>production-grade DevSecOps pipelines</strong> — where security gates are non-negotiable: SAST, SCA, secrets detection, container signing, and policy enforcement are all automated. By month 30, you're employable as a Junior DevSecOps Engineer and your pipeline portfolio proves it.",
+    skills: [
+      { name: "GitHub Actions (Advanced)", badge: "Industry Standard", icon: "🔁", desc: "Reusable workflows, composite actions, matrix builds, OIDC authentication to AWS/GCP (no long-lived secrets in CI), environment protection rules, manual approvals for production deploys. The goal: pipelines that any engineer on the team can read, understand, and modify — not pipelines only the author can operate.", res: ["GitHub Actions Docs|free", "OIDC for AWS (GitHub Docs)|free"] },
+      { name: "Testing in CI/CD", badge: "AI-Resistant", icon: "🧪", desc: "Unit tests (pytest, Go testing), integration tests against real services (testcontainers), contract testing (Pact), performance/load testing with k6 (run on every deploy — fail the pipeline if p95 latency exceeds threshold). The discipline of 'if it's not tested in CI it doesn't work' is the single biggest quality multiplier a team can adopt. Engineers who build this culture into pipelines from day one are extremely rare.", res: ["k6.io Docs|free", "Testcontainers|free", "pytest Docs|free"] },
+      { name: "Progressive Delivery", badge: "Advanced", icon: "🚦", desc: "Blue/green deployments (zero-downtime swap), canary releases (route percentage of traffic, measure error rate, auto-promote or rollback), feature flags (LaunchDarkly or Unleash for decoupling deploy from release), Argo Rollouts for K8s-native progressive delivery. The key insight: deploy frequency and change failure rate are inversely correlated when you have good progressive delivery — the safest way to deploy faster is to deploy smaller.", res: ["Argo Rollouts Docs|free", "Unleash (open source flags)|free"] },
+      { name: "Shift-Left Security (SAST/DAST/SCA)", badge: "Core Specialty", icon: "🔐", desc: "SAST with Semgrep (write custom rules for your stack — default rulesets miss 30% of real findings). DAST with OWASP ZAP against a running staging environment (active scanning, spider, authenticated scan). SCA with OWASP Dependency Check + Grype. Secrets scanning with Gitleaks + Trufflehog (block on push, not just warn). Container signing with Cosign + Sigstore enforced via admission controller. Supply chain: pin all GitHub Actions to SHA hashes. A pipeline that warns but does not block is not a security control — it is a paper trail.", res: ["Semgrep (free)|free", "Gitleaks|free", "Trivy (Aqua)|free", "Cosign (Sigstore)|free", "OWASP ZAP|free", "Trufflehog|free"] },
+      { name: "Service Mesh (Istio)", badge: "Essential", icon: "🕸️", desc: "Istio intercepts pod-to-pod traffic via Envoy sidecars to provide mTLS between all services, fine-grained traffic management (canary splits, circuit breaking, retries), and automatic traces/metrics per call. Understand the data plane vs control plane split (Envoy vs Istiod), then implement canary releases with VirtualService and DestinationRule. Linkerd is a lighter entry point if Istio feels overwhelming.", res: ["Istio Docs|free", "Istio in Action (book)|paid", "Linkerd Docs|free", "Solo.io Istio Fundamentals (free)|free"] }
+    ],
+    projects: [
+      "Build a complete DevSecOps pipeline: lint → SAST (Semgrep) → secrets scan (Gitleaks) → unit tests → SCA (Grype) → container build → Trivy scan → Cosign sign → DAST (ZAP) → deploy via ArgoCD with OPA admission policy enforcement. 🔗 Reference pipeline: github.com/aquasecurity/trivy-action + github.com/sigstore/cosign",
+      "Implement a canary deployment: route 10% traffic to new version, auto-promote or rollback. 🔗 Scaffold: github.com/argoproj/argo-rollouts — use their canary example as your starting point.",
+      "Add Terratest tests to your Terraform VPC module and include a tfsec/Checkov scan in the pipeline — fail the pipeline if any HIGH-severity Terraform misconfigurations are detected. 🔗 Tools: github.com/gruntwork-io/terratest + github.com/aquasecurity/tfsec",
+      "Install Istio on your EKS cluster and enforce mTLS between all services in your portfolio app namespace. Then implement a canary rollout using Istio's VirtualService traffic splitting — route 10% of requests to v2 and watch the metrics in Grafana before promoting. 🔗 Quickstart: istio.io/latest/docs/setup/getting-started"
+    ],
+    checkpoints: [
+      "Build a CI/CD pipeline from scratch on a blank repo",
+      "Explain the difference between blue/green, canary, and rolling deployments — and implement each one",
+      "Catch a real secret or vulnerability in a pipeline scan and explain the fix — and demonstrate that the pipeline blocks the merge, not just warns",
+      "Explain what a service mesh data plane is, why mTLS between services matters, and how Envoy intercepts traffic without application changes"
+    ]
+  },
+  {
+    id: 6, title: "Threat Detection, SIEM<br/>& Security Observability", germanTarget: { level: "B1+", milestone: "Month 36: B1+ — able to participate in German-language security reviews.", progress: 88 },
+    kicker: "// Months 31–36 · Detection Engineering & Incident Response", badge: "📡", pc: "--p6",
+    subtitle: "You can't defend what you can't see. Build the detection and response systems that turn raw cloud events into actionable security signals — and that make you the engineer everyone calls during a breach.",
+    pills: ["Months 31–36", "~12 hrs/week", "🏆 AWS Security Specialty"], aiWidth: "90%", aiText: "Very High — IR Judgment Under Pressure",
+    goal: "Build and operate security observability at scale. <strong>Write detection rules, triage alerts, lead security incident response, and run purple team exercises</strong> that validate your detections work against real attack patterns.",
+    customHTML: `<div class="uni-sync"><div class="uni-sync-title">💳 AWS Security Specialty — Exam Strategy</div><p>The AWS Security Specialty exam (~$300 USD) is the most respected AWS security credential. It's scenario-heavy and tests judgment, not recall — questions describe a real attack or compliance scenario and ask what you'd investigate, detect, or remediate. The best preparation is <strong>having actually built GuardDuty, Security Hub, CloudTrail analysis, and WAF rules</strong>, which is exactly what this phase does. Study resource: Stephane Maarek Security Specialty on Udemy (~$15 on sale). Book for Month 35 — give yourself a buffer for a retake.</p></div>
+    <div class="uni-sync"><div class="uni-sync-title">⏸️ Exam-Period Fallback</div><p>During university exams, protect SRE theory over lab work — SLOs, error budgets, and postmortem writing are conceptual and fit into 30-minute blocks. Defer Chaos Mesh experiments to the next free weekend; they need extended uninterrupted setup time. If the week fully collapses, the floor is 90 minutes: write one PromQL query for a real scenario (error rate, p99 latency, saturation) and validate it on your Grafana instance, then read one chapter from the Google SRE Book — chapters 13–17 on incident management are the highest-leverage reading in this phase. Both are completely portable, no lab setup needed.</p></div>`,
+    skills: [
+      { name: "SIEM & Log Aggregation", badge: "Core Specialty", icon: "📊", desc: "Centralized log collection with Fluent Bit/Fluentd into Elasticsearch/OpenSearch or Grafana Loki. Write detection queries in KQL or LogQL: failed SSH logins, IAM privilege escalation, unexpected CloudTrail API calls, container shell executions. SIEM is only as good as the logs flowing into it — learn to instrument sources correctly, not just query what's already there.", res: ["Grafana Loki Docs|free", "OpenSearch Docs|free", "Elastic SIEM Guide|free"] },
+      { name: "Detection Engineering (Sigma Rules)", badge: "AI-Resistant", icon: "🔍", desc: "Write Sigma detection rules for real attack techniques mapped to MITRE ATT&CK. Sigma is the vendor-neutral rule format — one rule compiles to Splunk, Elastic, or OpenSearch queries. Focus on high-signal, low-noise detections: lateral movement, persistence (cron, systemd, authorized_keys writes), privilege escalation, data exfiltration patterns. Maintain a detection library in Git.", res: ["Sigma (GitHub)|free", "MITRE ATT&CK|free", "Uncoder.io (Sigma translator)|free"] },
+      { name: "AWS Security Services (GuardDuty / CloudTrail / WAF)", badge: "Essential", icon: "🛡️", desc: "AWS GuardDuty (ML-based threat detection — understand which findings matter and which are noise), AWS Security Hub (findings aggregation + compliance scores), CloudTrail Insights (anomaly detection on API calls), AWS WAF (rate limiting, SQLi/XSS rules, IP reputation lists), VPC Flow Logs for network forensics. Being fluent in the AWS native security stack is directly tested in the AWS Security Specialty exam.", res: ["AWS Security Hub Workshop|free", "AWS GuardDuty Docs|free", "AWS WAF Workshop|free"] },
+      { name: "Incident Response (IR) Engineering", badge: "AI-Resistant", icon: "🚨", desc: "IR playbook design: preparation → identification → containment → eradication → recovery → lessons learned. Isolating a compromised EC2 instance without losing forensic evidence (take a snapshot, move to quarantine VPC, capture memory dump). Writing blameless postmortems. Running tabletop exercises. Engineers who can lead an IR calmly under pressure are extremely rare and well-paid.", res: ["AWS IR Guide|free", "NIST SP 800-61|free", "Google SRE Book (chapter on incident management)|free"] },
+      { name: "Prometheus, Grafana & Security Dashboards", badge: "Essential", icon: "📋", desc: "PromQL queries and alerting for both reliability and security signals: container privilege escalation attempts (Falco metrics), GuardDuty finding rate, failed auth rate, CVE count by severity over time. Security dashboards for executives (RAG status, findings trend) and engineers (alert queue, MTTR). Observability and security monitoring share the same stack — don't run two separate systems.", res: ["Prometheus Docs|free", "Grafana Docs|free"] },
+      { name: "Purple Team Exercises", badge: "Rare Skill", icon: "💥", desc: "Run controlled attack simulations (Atomic Red Team, Caldera) and validate that your detections fire as expected. Purple teaming is the feedback loop for detection engineering: attack → detect → improve the rule → attack again. Every detection in your SIEM should have a corresponding Atomic Red Team test that verifies it. Engineers who can run a purple team exercise are a rarity at any seniority level.", res: ["Atomic Red Team|free", "Caldera (MITRE)|free", "Stratus Red Team|free"] }
+    ],
+    projects: [
+      "Build a SIEM pipeline: collect CloudTrail + VPC Flow Logs + Falco alerts into OpenSearch; write 5 detection queries that identify real attack techniques (privilege escalation, IAM abuse, container shell exec). 🔗 Starter scaffold: github.com/elastic/detection-rules",
+      "Write 3 Sigma rules for MITRE ATT&CK techniques relevant to your cloud stack — translate them to both Elastic and OpenSearch formats using Uncoder.io. 🔗 Rule library: github.com/SigmaHQ/sigma/tree/master/rules/cloud",
+      "Simulate an AWS account compromise: over-permission an IAM user, perform suspicious API calls, then verify GuardDuty fires, Security Hub aggregates the finding, and your Sigma rule catches it in the SIEM. 🔗 Attack scaffold: github.com/RhinoSecurityLabs/pacu",
+      "Run an Atomic Red Team exercise against your EKS cluster — verify each technique is detected by Falco and produces an alert in Grafana. 🔗 Lab scaffold: github.com/redcanaryco/atomic-red-team",
+      "🐛 Bug Bounty Entry: Register on HackerOne and Bugcrowd. Choose one public program with a broad cloud/web scope. Run Nuclei + manual recon against in-scope assets. Write one formal bug report — even a P4 low-severity finding — using the standard template (Summary, Steps to Reproduce, Impact, CVSS score). A reviewed submission beats 10 lab projects for credibility. Document every attempt in a private GitHub repo regardless of outcome — your methodology is the asset."
+    ],
+    checkpoints: [
+      "Write detection queries that identify lateral movement, privilege escalation, and data exfiltration patterns from real CloudTrail logs",
+      "Lead a simulated cloud security incident: identify root cause from logs, isolate the compromised resource, write a blameless postmortem",
+      "Explain the full Sigma rule pipeline from rule authoring → compilation → deployment → alert triage",
+      "Configure AWS GuardDuty and explain what each finding category means, which ones are high-priority, and how you'd triage an active GuardDuty alert at 2 AM",
+      "Submit at least one bug report to a HackerOne or Bugcrowd public program — document your methodology, the finding, the impact, and the remediation in a private repo even if it's marked duplicate"
+    ]
+  },
+  {
+    id: 7, title: "Zero Trust Architecture<br/>& Security Platform Engineering", germanTarget: { level: "B1+ → B2 Starts", milestone: "Month 42: Begin B2 prep. Can read German compliance docs without a dictionary.", progress: 93 },
+    kicker: "// Months 37–42 · The Security AI-Proof Frontier", badge: "🏗️", pc: "--p7",
+    subtitle: "Stop using the security platform. Start building it. Design Zero Trust networks, Policy-as-Code enforcement, Secrets management, and developer security guardrails that entire engineering orgs depend on.",
+    pills: ["Months 37–42", "~12 hrs/week", "🔐 Zero Trust Architect"], aiWidth: "93%", aiText: "Exceptional — 8–12 Year Horizon",
+    goal: "Shift from operating security tools to <strong>building the security platform other engineers use</strong>. Design Zero Trust access models, self-service security guardrails, Policy-as-Code enforcement, and secrets management systems.",
+    customHTML: `<div class="uni-sync"><div class="uni-sync-title">⏸️ Exam-Period Fallback</div><p>Platform Engineering is the most conceptual phase — much of the learning is design thinking, not lab work. During exam seasons, read the CNCF Platform Engineering Maturity Model and DORA reports in short 30-minute blocks. Keep the Backstage IDP lab as your single protected hands-on activity. If the week fully compresses, spend 90 minutes on reading only: one real-world IDP case study (Spotify's Backstage origin, Zalando's platform team write-up, or Netflix's Paved Road blog post), then review one of your existing Kyverno or OPA policies and rewrite its description as if explaining it to a new engineer joining the team. Writing forces clarity. This phase's skills compound slowly — short, frequent sessions beat the occasional all-nighter here.</p></div>`,
+    skills: [
+      { name: "Zero Trust Architecture (BeyondCorp Model)", badge: "Core Specialty", icon: "🛡️", desc: "'Never trust, always verify' applied at every layer: network (micro-segmentation with Cilium/Istio), identity (mTLS between services, SPIFFE/SPIRE workload identity), application (per-request authorization via OPA). Design a Zero Trust migration plan for a traditional VPN-based network. Zero Trust architects are among the highest-paid security roles globally and the skillset is extremely scarce outside large enterprises.", res: ["BeyondCorp (Google paper)|free", "SPIFFE/SPIRE Docs|free", "NIST Zero Trust Architecture (SP 800-207)|free", "Cloudflare Zero Trust Docs|free"] },
+      { name: "Security Internal Developer Platform (IDP)", badge: "Core Specialty", icon: "🎛️", desc: "Build a Backstage-powered IDP where every golden path template pre-wires security: SAST in the pipeline, Trivy scan in CI, Vault integration for secrets, Kyverno policies enforced on deploy. The security IDP turns 'secure by default' from a slogan into a technical reality — developers get security for free by using the template. This is how security teams scale without becoming a bottleneck.", res: ["Backstage.io Docs|free", "CNCF Platform Engineering Whitepaper|free"] },
+      { name: "Policy-as-Code (OPA, Kyverno & tfsec)", badge: "AI-Resistant", icon: "📋", desc: "OPA Rego for general-purpose policy (enforce that every S3 bucket has encryption), Kyverno for Kubernetes-native admission control (block non-root containers, require resource limits, block latest image tags), tfsec/Checkov for Terraform security scanning. Conftest for testing policies in CI before they hit the cluster. Policy-as-Code is how security scales across hundreds of engineers without a human reviewer for every PR.", res: ["Kyverno Docs|free", "OPA Docs|free", "Conftest|free", "Checkov (Bridgecrew)|free"] },
+      { name: "Secrets Management (Vault)", badge: "Critical", icon: "🔐", desc: "HashiCorp Vault dynamic secrets (database credentials that expire automatically), PKI engine (issue short-lived TLS certs), KV v2 for static secrets, Vault Agent Injector and Vault Secrets Operator for K8s integration, secret rotation strategies. The key concept: static long-lived secrets in environment variables is the most common security vulnerability in cloud engineering — Vault solves this permanently.", res: ["Vault Docs|free", "Vault on K8s Tutorial|free"] },
+      { name: "Supply Chain Security", badge: "Emerging", icon: "🔗", desc: "SLSA framework levels (L1–L4), Cosign for container image signing and verification, SBOM generation with Syft, vulnerability scanning with Grype, Sigstore's transparency log. The software supply chain attack surface (SolarWinds, Log4Shell, XZ Utils) has made this an executive-level concern — engineers who understand it are extremely scarce.", res: ["SLSA.dev|free", "Sigstore Docs|free", "Syft (Anchore)|free"] },
+      { name: "Platform Metrics & DORA", badge: "Often Missed", icon: "📊", desc: "DORA metrics (Deployment Frequency, Lead Time for Change, Change Failure Rate, Time to Restore) as the measure of platform health. How to instrument your platform to produce these metrics automatically. A platform team that can show a 3x improvement in deployment frequency after introducing the IDP has a compelling story — one that can't be dismissed as 'nice infrastructure work'.", res: ["DORA State of DevOps Report|free", "Four Keys Project (Google)|free"] }
+    ],
+    projects: [
+      "Build a complete Backstage IDP: service catalog with at least 5 registered services, a golden path template that scaffolds a new microservice with CI/CD and observability pre-wired",
+      "Implement a Kyverno policy suite: enforce non-root containers, required labels (owner/team/env), block latest image tags in production namespace — and write Conftest tests that validate the policies in CI",
+      "Deploy Vault on K8s and configure dynamic PostgreSQL credentials that expire after 1 hour; demonstrate that restarting a pod gets a fresh credential automatically",
+      "Instrument your platform with DORA security metrics: write a dashboard tracking CVE count by severity over time, mean time to patch CRITICAL CVEs, and DevSecOps pipeline gate pass rate",
+      "Design and implement a Zero Trust network policy on your EKS cluster using Cilium — enforce that frontend pods can only reach backend pods, backend can only reach database, and all other traffic is denied. Verify with a live penetration test from a rogue pod"
+    ],
+    checkpoints: [
+      "Demo a working Security IDP with a golden path template that pre-wires SAST, Trivy scanning, and Vault secrets into every new service — a teammate can use it without reading documentation",
+      "Show a Kyverno policy blocking a non-compliant deployment in real time — and explain the difference between a validation and a mutation webhook",
+      "Configure Vault dynamic secrets for Kubernetes workloads and explain why static secrets in environment variables are dangerous",
+      "Explain the Zero Trust model end-to-end: how SPIFFE workload identities work, how mTLS is enforced between services, and how OPA makes per-request authorization decisions — then demonstrate it on your cluster"
+    ]
+  },
+  {
+    id: 8, title: "Red Team, Compliance<br/>& Security Leadership", germanTarget: { level: "B2 Target", milestone: "Month 48: B2 or strong B1+ at graduation — DACH interview-ready.", progress: 100 },
+    kicker: "// Months 43–48 · Graduation Phase · The Full Spectrum", badge: "🧠", pc: "--p8",
+    subtitle: "The final layer. You now think like an attacker AND a defender simultaneously. You earn the CKS, complete a 4-year journey, and hold the skills to pass compliance audits, lead security programs, and run red team engagements.",
+    pills: ["Months 43–48", "~10 hrs/week", "🏆 CKS Cert"], aiWidth: "97%", aiText: "Maximum — You Govern the Whole Stack",
+    customHTML: `<div class="uni-sync"><div class="uni-sync-title">💳 CKS — Your Hardest and Most Respected Cert</div><p>The CKS (Certified Kubernetes Security Specialist) requires a valid CKA first. It costs ~$395 USD and tests hands-on Kubernetes security under exam pressure: cluster hardening, system hardening (seccomp, AppArmor), supply chain security, runtime security (Falco), and network policies. It is considered the most difficult CNCF exam and is genuinely rare in the job market. <strong>Book it for Month 46.</strong> The CNCF CKA+CKS bundle saves ~$100 — buy both at the same time back in Phase 4 if budget allows. Study resource: KodeKloud CKS course (~$50). Killer.sh exam simulator is mandatory — it's harder than the real exam.</p></div>
+    <div class="uni-sync"><div class="uni-sync-title">💼 Salary Negotiation — What You're Worth at Graduation</div><p>By the end of this phase, your credential stack is: AWS SAA + CKA + AWS Security Specialty + CKS + 4 years of security engineering project work + (ideally) 6–12 months internship experience. <strong>DevSecOps and Cloud Security engineers are significantly undersupplied globally.</strong> Don't accept junior offers. Target mid-level (3–5 years equivalent) framing. In Egypt: EGP 40,000–70,000/month for local security roles. For remote EU/US roles: $50,000–80,000/year is achievable from Egypt with this full security stack. Security Specialty holders command a 20–30% premium over general cloud engineers. Get at least 3 competing offers before accepting anything.</p></div>`,
+    goal: "Develop the full-spectrum security mindset: <strong>attack like a red teamer, defend like a blue teamer, communicate like a CISO</strong>. Pass the CKS. Master compliance frameworks (ISO 27001, SOC 2, PCI-DSS basics). Close the loop on 4 years of intentional security engineering.",
+    skills: [
+      { name: "CKS — Kubernetes Security Specialist", badge: "🏆 Cert Target", icon: "🛡️", desc: "Cluster hardening (API server flags, etcd encryption at rest, audit logging), workload hardening (seccomp profiles, AppArmor, immutable container filesystems, read-only root fs), supply chain security (image signing + admission verification, OPA policies), runtime security (Falco rules — detecting shell spawned in container, unexpected network connections, privilege escalation). The CKS validates everything you built in Phases 4 and 7. You won't pass by studying only in Phase 8; you'll pass because you operated these systems for real.", res: ["KodeKloud CKS|paid", "Killer.sh CKS simulator|paid", "Falco Docs|free", "CKS Curriculum (GitHub)|free"] },
+      { name: "Red Team Fundamentals (Ethical Hacking)", badge: "AI-Resistant", icon: "⚔️", desc: "Cloud-focused red team methodology: AWS IAM privilege escalation paths (PACU framework), Kubernetes escape techniques (hostPath mounts, privileged containers, RBAC abuse), container breakout via exposed Docker sockets. Use test environments only — the goal is to understand how attackers think so you can design better detections and defenses. PNPT or eJPT certifications are complementary here.", res: ["PACU (AWS exploitation framework)|free", "HackTricks (cloud)|free", "TryHackMe Cloud Paths|free", "eJPT (eLearnSecurity)|paid"] },
+      { name: "Compliance Engineering (SOC 2 / ISO 27001 / PCI-DSS)", badge: "AI-Resistant", icon: "🔍", desc: "Translate compliance frameworks into technical controls: SOC 2 Trust Services Criteria → specific AWS Config rules and GuardDuty findings. ISO 27001 Annex A controls → Terraform security policies and IAM boundaries. PCI-DSS scope reduction via network segmentation. Automated compliance evidence collection with Prowler. Engineers who speak both compliance language and technical controls are extremely rare and directly support audit readiness.", res: ["Prowler (open source)|free", "AWS Compliance Center|free", "ISO 27001 Overview (ISMS.online)|free"] },
+      { name: "AI & LLM Security (OWASP LLM Top 10)", badge: "The Future", icon: "🤖", desc: "Securing AI-integrated systems: prompt injection, insecure output handling, model inversion attacks, training data poisoning, and supply chain risks in ML pipelines. Designing guardrails and audit trails for AI coding agents (Copilot, Claude Code) in DevSecOps workflows. The OWASP LLM Top 10 is the canonical reference. Engineers who understand AI security make AI-powered products defensible.", res: ["OWASP LLM Top 10|free", "NIST AI RMF|free", "AWS Bedrock Guardrails Docs|free"] },
+      { name: "Cloud Architecture Patterns", badge: "Senior Skill", icon: "🗺️", desc: "AWS Well-Architected Framework (all 6 pillars), multi-region active-active patterns, event-driven architecture, cell-based architecture. At the senior level you're not implementing — you're designing and reviewing systems built by others.", res: ["AWS Well-Architected|free", "AWS Architecture Blog|free"] },
+      { name: "Security Leadership & Communication", badge: "Career Multiplier", icon: "🎤", desc: "Write a security risk memo that a non-technical executive can act on. Present a threat model to a product team. Write security incident postmortems that build trust instead of blame. Produce Architecture Decision Records (ADRs) that capture security trade-offs. Engineers who can translate between attacker tactics and business risk are the ones who become CISOs, security architects, and engineering VPs.", res: ["adr.github.io (free)|free", "Schneier on Security Blog|free", "Cloud Security Alliance Publications|free"] },
+      { name: "Open Source Contribution Strategy", badge: "Career Multiplier", icon: "🌍", desc: "A merged PR in ArgoCD, Backstage, Prometheus, or Cilium carries more weight than 5 tutorial repos. Process: pick a tool you already use, file 3 detailed bug reports before writing code, filter issues by 'good first issue' + 'help wanted', read the contribution guide before opening your editor, keep your first PR under 100 lines. Small PRs get reviewed; big ones get ignored.", res: ["CNCF Project List (cncf.io)|free", "Good First Issue (goodfirstissue.dev)|free", "How to Contribute to Open Source (opensource.guide)|free", "GitHub CLI (for efficient PR workflow)|free"] },
+      { name: "Bug Bounty Engineering", badge: "🐛 Portfolio Proof", icon: "💰", desc: "By Phase 8 you have real offensive capability — bug bounty turns that into verifiable, externally-validated proof of skill. <strong>Program selection:</strong> Start on HackerOne's public programs with broad cloud/API scope (GitLab, Dropbox, U.S. Dept of Defense, Shopify). Use Bugcrowd for additional scope. <strong>Methodology:</strong> Recon (Subfinder, Amass, httpx) → fingerprint tech stack → map attack surface → test OWASP Top 10 + cloud misconfig patterns (SSRF, IAM overpermission, exposed metadata). <strong>Report writing:</strong> Every report should include: clear title, CVSS score, exact reproduction steps, proof-of-concept screenshot/curl, business impact statement. <em>A P4 low-severity finding with a perfect report beats a P2 with a sloppy one.</em> Archive every attempt — triaged, duplicate, or N/A — in a private 'bug-bounty-journal' repo. Your methodology log is the real portfolio asset, not just the accepted findings.", res: ["HackerOne (hackerone.com)|free", "Bugcrowd (bugcrowd.com)|free", "Nuclei Templates (github.com/projectdiscovery/nuclei-templates)|free", "Subfinder + httpx (ProjectDiscovery)|free", "PortSwigger Web Security Academy|free", "OWASP Testing Guide v4.2|free"] }
+    ],
+    projects: [
+      "Run a full red team exercise against your AWS lab account using PACU — document the attack path from an over-permissioned IAM key to account takeover, then implement the defensive controls that would stop each step. 🔗 Lab: github.com/RhinoSecurityLabs/pacu",
+      "Run Prowler against your AWS account and produce a SOC 2 / CIS Benchmark compliance report — fix the top 15 CRITICAL findings and write an executive summary presenting risk reduction in business terms. 🔗 Tool: github.com/prowler-cloud/prowler",
+      "Write a complete Incident Response playbook for a ransomware attack on your cloud environment — covering detection, containment, eradication, and recovery. Present it as a tabletop exercise. 🔗 Reference: github.com/certsocietegenerale/IRM",
+      "Publish a technical blog post about a security topic you now own: 'How I built a SIEM from scratch on EKS', 'STRIDE threat modeling for a 3-tier cloud app', or 'What the NSA K8s hardening guide actually means in practice'. 🔗 Publish on: dev.to (free, no setup) or hashnode.com — both index on Google. Share on LinkedIn the day it goes live.",
+      "Contribute a merged pull request to a CNCF project following the 5-step strategy in the skill card above — bug report first, small first PR, then iterate. 🔗 Start here: goodfirstissue.dev → filter by 'security' or pick Falco (github.com/falcosecurity/falco), Trivy (github.com/aquasecurity/trivy), or Semgrep (github.com/returntocorp/semgrep).",
+      "Conduct 3 mock system design interviews with peers or record yourself on video; critique your own explanations. 🔗 Scenarios: 'Design a secure multi-tenant SaaS platform on AWS', 'Design a zero-trust network for a fintech startup', 'Design a SIEM pipeline that handles 10TB of logs/day'. Use excalidraw.com to diagram in real time."
+    ],
+    checkpoints: [
+      "Pass the CKS exam — this is the capstone technical credential of the roadmap",
+      "You can walk through any phase of this roadmap in a technical interview, answer follow-up questions confidently, and explain the trade-offs you made in each project",
+      "Your GitHub has consistent activity spanning multiple years, clean READMEs, and at least two projects with real architecture diagrams and documented ADRs",
+      "You've published at least one piece of public technical writing that someone outside your circle has read and engaged with",
+      "You can design a full cloud architecture on a whiteboard — from ingress to database — and defend every trade-off without notes",
+      "You've received at least 3 salary offers and negotiated at least one of them upward",
+      "You have a clear answer to the question: 'Where do you want to be in 3 years?' — and a concrete plan to get there"
+    ]
+  }
+];
+
+/**
+ * ─────────────────────────────────────────────
+ * CORE LOGIC & STATE MANAGEMENT
+ * ─────────────────────────────────────────────
+ */
+const App = {
+  state: {
+    completedItems: (JSON.parse(localStorage.getItem('roadmapProgress')) || []).filter(id => id != null),
+    theme: localStorage.getItem('roadmapTheme') || 'dark',
+    totalItems: 0,
+    searchQuery: '',
+    currentFilter: 'all'
+  },
+
+  init() {
+    this.renderRoadmap();
+    this.applyTheme(this.state.theme);
+    this.bindEvents();
+    this.updateProgress();
+    this.setupScrollSpy();
+  },
+
+  saveState() {
+    localStorage.setItem('roadmapProgress', JSON.stringify(this.state.completedItems));
+    this.updateProgress();
+  },
+
+  toggleItem(id, isChecked) {
+    if (isChecked) {
+      if (!this.state.completedItems.includes(id)) this.state.completedItems.push(id);
+    } else {
+      this.state.completedItems = this.state.completedItems.filter(i => i !== id);
+    }
+    this.saveState();
+  },
+
+  markPhaseComplete(phaseId) {
+    const checkboxes = document.querySelectorAll(`.item-checkbox[data-phase="${phaseId}"]`);
+    checkboxes.forEach(cb => {
+      cb.checked = true;
+      this.toggleItem(cb.dataset.id, true);
+      this.applyCrossout(cb);
+    });
+  },
+
+  applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('roadmapTheme', theme);
+  },
+
+  updateProgress() {
+    const total = this.state.totalItems;
+    const completed = this.state.completedItems.length;
+    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+    document.getElementById('top-fill').style.width = `${percent}%`;
+    document.getElementById('pb').style.width = `${percent}%`;
+    document.getElementById('pp').textContent = `${percent}%`;
+    document.getElementById('dashPercent').textContent = `${percent}%`;
+    document.getElementById('tasksCount').innerHTML = `${completed} / ${total}`;
+
+    // ETA calculation: roadmap is 48 months total
+    const etaEl = document.getElementById('dashETA');
+    if (percent === 0) {
+      etaEl.textContent = '48 mo left';
+      etaEl.style.color = 'var(--muted)';
+    } else if (percent === 100) {
+      etaEl.textContent = 'Complete 🎉';
+      etaEl.style.color = 'var(--p1)';
+    } else {
+      const monthsLeft = Math.round(48 * (1 - percent / 100));
+      const finishDate = new Date();
+      finishDate.setMonth(finishDate.getMonth() + monthsLeft);
+      const yr = finishDate.getFullYear();
+      const mo = finishDate.toLocaleString('default', { month: 'short' });
+      etaEl.textContent = `${mo} ${yr}`;
+      etaEl.style.color = 'var(--muted)';
+    }
+
+    // Update "Next Focus" based on first uncompleted item
+    const allCheckboxes = Array.from(document.querySelectorAll('.item-checkbox'));
+    const firstUnchecked = allCheckboxes.find(cb => !cb.checked);
+    if (firstUnchecked) {
+      const nameEl = firstUnchecked.closest('.trackable-parent').querySelector('.item-title');
+      document.getElementById('dashNextTask').textContent = nameEl ? nameEl.textContent : 'Next Task';
+    } else {
+      document.getElementById('dashNextTask').textContent = 'All Completed! 🎉';
+    }
+  },
+
+  applyCrossout(checkbox) {
+    const parent = checkbox.closest('.trackable-parent');
+    if (parent) {
+      if(checkbox.checked) parent.classList.add('completed-text');
+      else parent.classList.remove('completed-text');
+    }
+  },
+
+  renderRoadmap() {
+    const container = document.getElementById('roadmapContent');
+    let html = '';
+    let itemCounter = 0;
+
+    phasesData.forEach((p, idx) => {
+      // Build Skills
+      let skillsHtml = '';
+      p.skills.forEach((s, sIdx) => {
+        const id = `p${p.id}-s${sIdx}`; itemCounter++;
+        const checked = this.state.completedItems.includes(id) ? 'checked' : '';
+        const resHtml = s.res.map(r => {
+          const [text, type] = r.split('|');
+          return `<span class="resource-tag ${type || 'free'}">${text}</span>`;
+        }).join('');
+        
+        skillsHtml += `
+          <div class="skill-card trackable-parent filterable ${checked ? 'completed-text' : ''}" data-type="skill">
+            <div class="skill-header">
+              <input type="checkbox" class="item-checkbox" data-id="${id}" data-phase="${p.id}" ${checked}>
+              <span class="skill-icon">${s.icon}</span>
+              <span class="skill-name item-title">${s.name}</span>
+              <span class="skill-badge">${s.badge}</span>
+            </div>
+            <div class="skill-description searchable-text">${s.desc}</div>
+            <div class="skill-resources">${resHtml}</div>
+          </div>`;
+      });
+
+      // Build Projects
+      let projHtml = '';
+      p.projects.forEach((pr, prIdx) => {
+        const id = `p${p.id}-pr${prIdx}`; itemCounter++;
+        const checked = this.state.completedItems.includes(id) ? 'checked' : '';
+        projHtml += `
+          <div class="project-item trackable-parent filterable ${checked ? 'completed-text' : ''}" data-type="project">
+            <input type="checkbox" class="item-checkbox" data-id="${id}" data-phase="${p.id}" ${checked}>
+            <span class="project-num">0${prIdx+1}</span>
+            <span class="project-content item-title searchable-text">${pr}</span>
+          </div>`;
+      });
+
+      // Build Checkpoints
+      let checkHtml = '';
+      let cpCounter = 0;
+      if (p.checkpointGroups) {
+        p.checkpointGroups.forEach((group) => {
+          const isMastery = group.label.startsWith('◇');
+          checkHtml += `<div class="checkpoint-group-label${isMastery ? ' mastery-label' : ''}">${group.label}</div>`;
+          group.items.forEach((cp) => {
+            const id = `p${p.id}-cp${cpCounter}`; itemCounter++; cpCounter++;
+            const checked = this.state.completedItems.includes(id) ? 'checked' : '';
+            checkHtml += `
+              <li class="trackable-parent ${checked ? 'completed-text' : ''}">
+                <input type="checkbox" class="item-checkbox" data-id="${id}" data-phase="${p.id}" ${checked}>
+                <span class="item-title">${cp}</span>
+              </li>`;
+          });
+        });
+      } else {
+        p.checkpoints.forEach((cp, cpIdx) => {
+          const id = `p${p.id}-cp${cpIdx}`; itemCounter++;
+          const checked = this.state.completedItems.includes(id) ? 'checked' : '';
+          checkHtml += `
+            <li class="trackable-parent ${checked ? 'completed-text' : ''}">
+              <input type="checkbox" class="item-checkbox" data-id="${id}" data-phase="${p.id}" ${checked}>
+              <span class="item-title">${cp}</span>
+            </li>`;
+        });
+      }
+
+      html += `
+        <div class="phase-section" id="p${p.id}" data-p="${p.id}">
+          <div class="phase-header">
+            <div class="phase-badge">
+              <span class="badge-label">PHASE</span><span class="badge-icon">${p.badge}</span><span class="badge-number">0${p.id}</span>
+            </div>
+            <div class="phase-title-block">
+              <div class="phase-kicker">${p.kicker}</div>
+              <div class="phase-h2">${p.title}</div>
+              <div class="phase-subtitle">${p.subtitle}</div>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+              <div class="phase-pills">
+                ${p.pills.map(pill => `<div class="mpill">${pill}</div>`).join('')}
+              </div>
+              <button class="phase-toggle" data-target="body-p${p.id}">Hide Phase</button>
+            </div>
+          </div>
+
+          <div class="phase-body" id="body-p${p.id}">
+            <div class="ai-meter">
+              <span class="ai-meter-label">AI Resistance</span>
+              <div class="ai-bar"><div class="ai-fill" style="width:${p.aiWidth}"></div></div>
+              <span class="ai-value">${p.aiText}</span>
+            </div>
+
+            ${p.germanTarget ? `
+            <div class="de-meter">
+              <span class="de-meter-label">🇩🇪 German Target</span>
+              <div class="de-bar"><div class="de-fill" style="width:${p.germanTarget.progress}%"></div></div>
+              <span class="de-level">${p.germanTarget.level}</span>
+              <span class="de-tip">${p.germanTarget.milestone}</span>
+            </div>` : ''}
+            
+            ${p.customHTML ? p.customHTML : ''}
+            ${p.uniSync ? `<div class="uni-sync"><div class="uni-sync-title">${p.uniSync.title}</div><p>${p.uniSync.html}</p></div>` : ''}
+
+            <div class="goal-box">
+              <span class="goal-icon">🎯</span>
+              <div>
+                <div class="goal-tag">Phase Goal</div>
+                <div class="goal-text">${p.goal}</div>
+              </div>
+            </div>
+
+            <div class="section-divider">Core Skills</div>
+            <div class="skill-grid">${skillsHtml}</div>
+
+            <div class="section-divider">Build These Projects</div>
+            ${projHtml}
+
+            <div class="checkpoint-box">
+              <div class="checkpoint-title">✦ Before Moving On — You Should Be Able To</div>
+              <ul class="checkpoint-list">${checkHtml}</ul>
+            </div>
+            
+            <button class="mark-phase-btn" data-phase="${p.id}">✓ Mark Phase Complete</button>
+          </div>
+        </div>
+      `;
+    });
+
+    this.state.totalItems = itemCounter;
+    container.innerHTML = html;
+
+    // Apply visual crossout on load
+    document.querySelectorAll('.item-checkbox:checked').forEach(cb => this.applyCrossout(cb));
+  },
+
+  bindEvents() {
+    // Checkbox interactions
+    document.addEventListener('change', e => {
+      if (e.target.classList.contains('item-checkbox')) {
+        this.toggleItem(e.target.dataset.id, e.target.checked);
+        this.applyCrossout(e.target);
+      }
+    });
+
+    // Mark phase complete
+    document.addEventListener('click', e => {
+      if (e.target.classList.contains('mark-phase-btn')) {
+        this.markPhaseComplete(e.target.dataset.phase);
+      }
+    });
+
+    // Collapsible
+    document.addEventListener('click', e => {
+      if (e.target.classList.contains('phase-toggle')) {
+        const body = document.getElementById(e.target.dataset.target);
+        if (body.classList.contains('collapsed')) {
+          body.classList.remove('collapsed');
+          e.target.textContent = 'Hide Phase';
+        } else {
+          body.classList.add('collapsed');
+          e.target.textContent = 'Show Phase';
+        }
+      }
+    });
+
+    // Theme Toggle
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const newTheme = this.state.theme === 'dark' ? 'light' : 'dark';
+      this.state.theme = newTheme;
+      this.applyTheme(newTheme);
+    });
+
+    // Sidebar Nav Click
+    document.querySelectorAll('.nav-item').forEach(nav => {
+      nav.addEventListener('click', (e) => {
+        // Smooth scroll handled by CSS, just update dash
+        document.getElementById('dashPhase').textContent = '0' + nav.dataset.target;
+      });
+    });
+
+    // Search & Filter
+    const searchInput = document.getElementById('searchInput');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+
+    searchInput.addEventListener('input', (e) => {
+      this.state.searchQuery = e.target.value.toLowerCase();
+      this.applyFilters();
+    });
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        this.state.currentFilter = e.target.dataset.filter;
+        this.applyFilters();
+      });
+    });
+
+    // Keyboard shortcut '/'
+    document.addEventListener('keydown', e => {
+      if (e.key === '/' && document.activeElement !== searchInput) {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
+  },
+
+  applyFilters() {
+    const query = this.state.searchQuery;
+    const filter = this.state.currentFilter;
+    const items = document.querySelectorAll('.filterable');
+
+    items.forEach(item => {
+      const type = item.dataset.type;
+      const text = item.textContent.toLowerCase();
+      
+      const matchSearch = text.includes(query);
+      const matchFilter = filter === 'all' || type === filter;
+
+      if (matchSearch && matchFilter) {
+        item.classList.remove('hidden-by-filter');
+      } else {
+        item.classList.add('hidden-by-filter');
+      }
+    });
+  },
+
+  setupScrollSpy() {
+    const sections = document.querySelectorAll('.phase-section');
+    const navItems = document.querySelectorAll('.nav-item');
+    const dashPhase = document.getElementById('dashPhase');
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const id = e.target.id;
+        const pNum = e.target.dataset.p;
+        
+        navItems.forEach(n => n.classList.remove('active'));
+        const active = document.querySelector(`.nav-item[href="#${id}"]`);
+        if (active) active.classList.add('active');
+        
+        dashPhase.textContent = '0' + pNum;
+      });
+    }, { threshold: 0.2, rootMargin: "-10% 0px -60% 0px" });
+
+    sections.forEach(s => obs.observe(s));
+  }
+};
+
+// Start App
+App.init();
+</script>
+</body>
+</html>
