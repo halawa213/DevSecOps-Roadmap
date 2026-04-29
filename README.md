@@ -10,6 +10,9 @@
 > A structured, self-paced path from CS student to **DevSecOps & Cloud Security Engineer** — with interactive progress tracking, phase filtering, and a built-in dashboard.
 
 ---
+## Open the Roadmap
+
+[![Open Roadmap](https://img.shields.io/badge/Open-DevSecOps_Roadmap-0ea5e9?style=for-the-badge&logo=github)](https://halawa213.github.io/DevSecOps-Roadmap/DevSecOps.html)
 
 ## Roadmap Overview
 
