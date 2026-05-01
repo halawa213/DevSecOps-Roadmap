@@ -1,7 +1,6 @@
 # Zero to DevSecOps & Cloud Security Engineer
 ### A 48-Month Interactive Roadmap for CS Students
 
-[![Phase](https://img.shields.io/badge/Current_Phase-00_%7C_Security_Foundations-38bdf8?style=flat-square&logo=shield)](./DevSecOps.html)
 [![Duration](https://img.shields.io/badge/Duration-48_Months-34d399?style=flat-square&logo=clock)](./DevSecOps.html)
 [![Certifications](https://img.shields.io/badge/Certifications-5_Total-a78bfa?style=flat-square&logo=amazonaws)](./DevSecOps.html)
 [![Effort](https://img.shields.io/badge/Weekly_Effort-10–15h-fb923c?style=flat-square)](./DevSecOps.html)
